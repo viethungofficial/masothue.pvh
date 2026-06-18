@@ -86,10 +86,10 @@
         </div>
     </header>
 
-    <!-- Main Content Container (Cố định 2 cột bằng nhau hoàn hảo h-420px, trải rộng tối đa 1300px) -->
-    <main class="max-w-[1300px] w-full mx-auto px-4 py-3 flex-grow grid grid-cols-1 md:grid-cols-2 gap-4 items-start z-10">
+    <!-- Main Content Container (Cấu trúc lại tỉ lệ cột: Trái 41% - Phải 59% hoàn hảo tránh cuộn) -->
+    <main class="max-w-[1300px] w-full mx-auto px-4 py-3 flex-grow grid grid-cols-1 md:grid-cols-[5fr_7fr] lg:grid-cols-[4fr_6fr] gap-4 items-start z-10">
         
-        <!-- Khối Tìm kiếm bên trái (Cột 1) -->
+        <!-- Khối Tìm kiếm bên trái (Cột 1 - Đã thu nhỏ vừa vặn) -->
         <section class="flex flex-col gap-3 w-full">
             
             <!-- Hộp nhập tìm kiếm và nút ngang hàng -->
@@ -168,7 +168,7 @@
             </div>
         </section>
 
-        <!-- Khối hiển thị kết quả (Cột 2) - Chiều cao cố định h-420px tránh nhấp nhô giao diện tuyệt đối -->
+        <!-- Khối hiển thị kết quả (Cột 2 - Đã nới rộng tối đa không gian để chứa thông tin) -->
         <section class="flex flex-col w-full min-h-[420px] max-h-[420px] overflow-hidden">
             
             <!-- Trạng thái Đang Tải (Skeleton loading) - Khóa cứng h-[420px] -->
