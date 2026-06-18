@@ -143,10 +143,8 @@
                         </button>
                     </div>
 
-                    <!-- Trạng thái phân tích cấu trúc đối soát trực tiếp -->
-                    <div id="checksum-status" class="text-[12px] flex items-center gap-1.5 px-2.5 py-1.5 bg-slate-50 rounded-md border border-slate-100 transition-all duration-200">
-                        <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
-                        <span class="text-slate-400 font-medium">Sẵn sàng phân tích cấu trúc và thuật toán kiểm thử.</span>
+                    <!-- Trạng thái phân tích cấu trúc đối soát trực tiếp (Ẩn đi theo mặc định) -->
+                    <div id="checksum-status" class="hidden text-[12px] flex items-center gap-1.5 px-2.5 py-1.5 bg-slate-50 rounded-md border border-slate-100 transition-all duration-200">
                     </div>
                 </form>
             </div>
@@ -168,11 +166,11 @@
             </div>
         </section>
 
-        <!-- Khối hiển thị kết quả (Cột 2 - Đã nới rộng tối đa không gian để chứa thông tin) -->
-        <section class="flex flex-col w-full min-h-[420px] max-h-[420px] overflow-hidden">
+        <!-- Khối hiển thị kết quả (Cột 2) - Đã tăng độ dài tối đa lên h-[490px] để tránh xuất hiện thanh cuộn -->
+        <section class="flex flex-col w-full min-h-[490px] max-h-[490px] overflow-hidden">
             
-            <!-- Trạng thái Đang Tải (Skeleton loading) - Khóa cứng h-[420px] -->
-            <div id="loading-state" class="hidden bg-white border border-slate-200/80 rounded-xl p-4 shadow-sm flex flex-col h-[420px] justify-center">
+            <!-- Trạng thái Đang Tải (Skeleton loading) - Khóa cứng h-[490px] -->
+            <div id="loading-state" class="hidden bg-white border border-slate-200/80 rounded-xl p-4 shadow-sm flex flex-col h-[490px] justify-center">
                 <div class="flex justify-between items-center border-b border-slate-150 pb-2.5">
                     <div class="h-5 bg-slate-200 rounded w-1/3 animate-pulse"></div>
                     <div class="h-6 bg-slate-200 rounded-full w-24 animate-pulse"></div>
@@ -194,8 +192,8 @@
                 </div>
             </div>
 
-            <!-- Màn hình chờ rỗng - Khóa cứng h-[420px] -->
-            <div id="welcome-state" class="bg-white border border-slate-200/80 rounded-xl p-5 shadow-sm text-center flex flex-col items-center justify-center h-[420px] relative overflow-hidden group">
+            <!-- Màn hình chờ rỗng - Khóa cứng h-[490px] -->
+            <div id="welcome-state" class="bg-white border border-slate-200/80 rounded-xl p-5 shadow-sm text-center flex flex-col items-center justify-center h-[490px] relative overflow-hidden group">
                 <div class="w-12 h-12 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-slate-500 mb-4 transition-transform group-hover:scale-105 duration-300">
                     <svg class="w-6 h-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M10 21h7a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v11m0 5l4.879-4.879m0 0a3 3 0 104.243-4.242 3 3 0 00-4.243 4.242z" />
@@ -215,8 +213,8 @@
                 </div>
             </div>
 
-            <!-- Khung kết quả chính - Khóa cứng h-[420px] hoàn toàn cố định -->
-            <div id="result-state" class="hidden bg-white border border-slate-200/80 rounded-xl p-4 shadow-sm relative overflow-hidden flex flex-col gap-3 h-[420px] animate-fade-in">
+            <!-- Khung kết quả chính - Khóa cứng h-[490px] hoàn toàn cố định và không bao giờ bị tràn cuộn -->
+            <div id="result-state" class="hidden bg-white border border-slate-200/80 rounded-xl p-4 shadow-sm relative overflow-hidden flex flex-col gap-3 h-[490px] animate-fade-in">
                 
                 <!-- Huy hiệu Trạng thái nổi bật -->
                 <div id="result-badge" class="absolute top-0 right-0 px-3 py-1.5 rounded-bl-lg text-[11px] font-bold tracking-wider uppercase border-l border-b bg-emerald-50 border-emerald-150 text-emerald-700">
@@ -241,7 +239,7 @@
                     </button>
                 </div>
 
-                <!-- NỘI DUNG TAB 1: THÔNG TIN CHI TIẾT (Xóa mọi khoảng trắng thừa phía dưới địa chỉ đăng ký) -->
+                <!-- NỘI DUNG TAB 1: THÔNG TIN CHI TIẾT (Tránh tuyệt đối hiện thanh cuộn) -->
                 <div id="tab-content-info" class="tab-content flex flex-col justify-between flex-grow overflow-hidden">
                     <div class="space-y-2.5 overflow-y-auto pr-0.5 flex-grow">
                         <div class="flex items-center justify-between gap-2 border-b border-dashed border-slate-100 pb-2">
@@ -287,7 +285,7 @@
                                 <span id="res-tax-office" class="text-[13px] font-bold text-indigo-700 block mt-0.5"></span>
                             </div>
 
-                            <!-- Địa chỉ đăng ký: Xóa khoảng trống thừa bằng cách thiết lập margin-bottom bằng 0 -->
+                            <!-- Địa chỉ đăng ký: Thiết lập margin-bottom bằng 0 -->
                             <div class="bg-slate-50/80 p-2 rounded-lg border border-slate-150 sm:col-span-2 relative group/addr mb-0">
                                 <span class="text-[11px] text-slate-400 font-bold block uppercase tracking-wider">Địa chỉ đăng ký kinh doanh</span>
                                 <div class="flex justify-between items-start gap-2.5 mt-0.5">
@@ -345,7 +343,7 @@
                     </div>
                 </div>
 
-                <!-- NỘI DUNG TAB 2: BẢN ĐỒ VỊ TRÍ GOOGLE MAPS (Cố định khung hình, chuyển động mượt mà) -->
+                <!-- NỘI DUNG TAB 2: BẢN ĐỒ VỊ TRÍ GOOGLE MAPS -->
                 <div id="tab-content-map" class="tab-content hidden flex flex-col justify-between flex-grow overflow-hidden">
                     <div class="flex justify-between items-center flex-shrink-0">
                         <div>
@@ -366,7 +364,7 @@
                     </div>
 
                     <!-- Khung Google Maps Embed an toàn, cực kỳ chính xác -->
-                    <div id="map-container" class="h-[210px] rounded-lg bg-slate-50 border border-slate-200 relative overflow-hidden z-20 flex-grow my-2">
+                    <div id="map-container" class="h-[280px] rounded-lg bg-slate-50 border border-slate-200 relative overflow-hidden z-20 flex-grow my-2">
                         <div id="map-loading" class="absolute inset-0 bg-white/95 z-30 flex flex-col justify-center items-center gap-2 text-[12px] font-bold text-slate-500">
                             <svg class="animate-spin h-5 w-5 text-indigo-600" fill="none" viewBox="0 0 24 24">
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -674,22 +672,20 @@
             return `Chi cục Thuế khu vực ${index} ${formattedProvince}`;
         }
 
-        // Đánh giá trạng thái đối soát toán học
+        // Đánh giá trạng thái đối soát toán học (Ẩn đi khi rỗng và hiển thị linh hoạt)
         function evaluateChecksumLive(numbersOnly) {
             const checksumStatus = document.getElementById('checksum-status');
             
-            // CHỐT CHẶN AN TOÀN: Kiểm tra nếu phần tử checksum-status không tồn tại thì dừng lại luôn để tránh lỗi null
+            // CHỐT CHẶN AN TOÀN: Kiểm tra nếu phần tử checksum-status không tồn tại thì dừng lại
             if (!checksumStatus) return;
 
             if (!numbersOnly) {
-                checksumStatus.className = "text-[12px] flex items-center gap-1.5 px-2.5 py-1.5 bg-slate-50 rounded-md border border-slate-100 transition-all duration-200";
-                checksumStatus.innerHTML = `
-                    <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
-                    <span class="text-slate-400 font-medium">Sẵn sàng phân tích cấu trúc định dạng thuế và CCCD.</span>
-                `;
+                checksumStatus.classList.add('hidden');
+                checksumStatus.innerHTML = '';
                 return;
             }
 
+            checksumStatus.classList.remove('hidden');
             if (numbersOnly.length < 10) {
                 checksumStatus.className = "text-[12px] flex items-center gap-1.5 px-2.5 py-1.5 bg-amber-50 rounded-md border border-amber-200/40 text-amber-700 transition-all duration-200 animate-pulse";
                 checksumStatus.innerHTML = `
@@ -945,6 +941,7 @@
             document.getElementById('stat-success').innerText = stats.successfulSearches;
         }
 
+        // Thiết lập Tabs điều hướng hành chính
         function setupTabs() {
             const tabs = ['info', 'map'];
             
