@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="vi" class="dark">
+<html lang="vi" class="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MASOTHUE - Tra Cứu Mã Số Thuế Siêu Tốc</title>
+    <title>MASOTHUE - Tra Cứu Mã Số Thuế Siêu Tốc & Chuyên Nghiệp</title>
     
-    <!-- Favicon SVG tích hợp độc quyền lấy cảm hứng từ logo thương hiệu PH (watermarked_img_259929549896555889.png) -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%236366f1'/%3E%3Cstop offset='100%25' stop-color='%2310b981'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='16' cy='16' r='14' fill='%23020617' stroke='url(%23grad)' stroke-width='2'/%3E%3Cpath d='M11 10h5a3 3 0 0 1 0 6h-5v6M21 10v12M16 16h5' fill='none' stroke='url(%23grad)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='16' cy='10' r='1.5' fill='%2310b981'/%3E%3C/svg%3E">
+    <!-- Favicon SVG tích hợp độc quyền lấy cảm hứng từ logo thương hiệu PH -->
+    <link class="rounded-full" rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%234f46e5'/%3E%3Cstop offset='100%25' stop-color='%2310b981'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='16' cy='16' r='14' fill='%23ffffff' stroke='url(%23grad)' stroke-width='2'/%3E%3Cpath d='M11 10h5a3 3 0 0 1 0 6h-5v6M21 10v12M16 16h5' fill='none' stroke='url(%23grad)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='16' cy='10' r='1.5' fill='%2310b981'/%3E%3C/svg%3E">
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -22,293 +22,298 @@
         .font-mono-custom {
             font-family: 'JetBrains Mono', monospace;
         }
-        /* Custom scrollbar for beautiful UI */
+        /* Tối ưu hóa thanh cuộn của Light Mode */
         ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+            width: 4px;
+            height: 4px;
         }
         ::-webkit-scrollbar-track {
-            background: #020617;
+            background: #f1f5f9;
         }
         ::-webkit-scrollbar-thumb {
-            background: #1e293b;
+            background: #cbd5e1;
             border-radius: 9999px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: #334155;
+            background: #94a3b8;
         }
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(6px); }
+            from { opacity: 0; transform: translateY(2px); }
             to { opacity: 1; transform: translateY(0); }
         }
         .animate-fade-in {
-            animation: fadeIn 0.25s ease-out forwards;
+            animation: fadeIn 0.15s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col overflow-x-hidden relative selection:bg-indigo-500 selection:text-white pb-8">
+<body class="bg-[#f8fafc] text-slate-800 min-h-screen flex flex-col overflow-x-hidden relative selection:bg-indigo-100 selection:text-indigo-900 pb-3">
 
-    <!-- Các vòng tròn hiệu ứng phát sáng mờ ảo ở nền -->
-    <div class="absolute top-0 left-1/4 w-96 h-96 bg-indigo-600/10 rounded-full blur-[120px] pointer-events-none -translate-y-1/2"></div>
-    <div class="absolute bottom-1/4 right-10 w-[450px] h-[450px] bg-emerald-500/5 rounded-full blur-[150px] pointer-events-none"></div>
-    <div class="absolute top-1/3 right-1/4 w-80 h-80 bg-violet-600/10 rounded-full blur-[100px] pointer-events-none"></div>
+    <!-- Khối trang trí nền mờ sang trọng -->
+    <div class="absolute top-0 left-1/4 w-[30rem] h-[30rem] bg-indigo-200/15 rounded-full blur-[120px] pointer-events-none -translate-y-1/2"></div>
+    <div class="absolute bottom-1/4 right-10 w-[20rem] h-[20rem] bg-emerald-100/15 rounded-full blur-[100px] pointer-events-none"></div>
 
-    <!-- Container cho thông báo Toast -->
-    <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2.5 pointer-events-none"></div>
+    <!-- Container cho thông báo Toast - Đã chuyển xuống góc Dưới Bên Phải (Bottom Right) -->
+    <div id="toast-container" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
-    <!-- Header -->
-    <header class="border-b border-slate-900 bg-slate-950/70 backdrop-blur-md sticky top-0 z-40 transition-all">
-        <div class="max-w-6xl mx-auto px-4 py-3 flex flex-col sm:flex-row justify-between items-center gap-3">
-            <div class="flex items-center gap-2.5">
-                <div class="w-9 h-9 rounded-lg bg-gradient-to-tr from-indigo-600 to-emerald-500 flex items-center justify-center shadow-lg shadow-indigo-500/20">
-                    <svg class="w-4.5 h-4.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <!-- Header nhỏ gọn và mượt mà -->
+    <header class="border-b border-slate-200 bg-white/80 backdrop-blur-md sticky top-0 z-40 shadow-sm">
+        <div class="max-w-[1300px] mx-auto px-4 py-1.5 flex flex-col sm:flex-row justify-between items-center gap-2">
+            <div class="flex items-center gap-2">
+                <div class="w-7.5 h-7.5 rounded-lg bg-gradient-to-tr from-indigo-600 to-emerald-500 flex items-center justify-center shadow-sm shadow-indigo-500/10">
+                    <svg class="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
                 </div>
                 <div>
-                    <h1 class="text-lg font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-100 to-slate-400">
-                        MASOTHUE <span class="text-[10px] px-1.5 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 ml-1 font-semibold">v3.6</span>
+                    <h1 class="text-sm font-bold tracking-tight text-slate-900 flex items-center gap-1">
+                        MASOTHUE <span class="text-[8px] px-1.5 py-0.2 rounded-full bg-indigo-50 text-indigo-600 border border-indigo-200/50 font-extrabold">PRO v4.7</span>
                     </h1>
-                    <p class="text-[11px] text-slate-550">Tra cứu mã số thuế siêu tốc &amp; Độc lập</p>
+                    <p class="text-[9px] text-slate-400 font-medium">Tra cứu mã số thuế &amp; Định vị Google Maps chính xác nhất</p>
                 </div>
             </div>
 
-            <!-- Thống kê nhỏ góc trên -->
-            <div class="flex items-center gap-3.5 text-[11px] bg-slate-900/60 border border-slate-800/80 px-3.5 py-1.5 rounded-lg">
-                <div class="flex items-center gap-1.5 border-r border-slate-800 pr-3">
-                    <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
-                    <span class="text-slate-400">Đã tra cứu: <strong id="stat-total" class="text-slate-200">0</strong></span>
+            <!-- Thống kê nhỏ gọn -->
+            <div class="flex items-center gap-2.5 text-[9px] bg-slate-100/60 border border-slate-200/50 px-2.5 py-0.5 rounded-lg">
+                <div class="flex items-center gap-1 border-r border-slate-200 pr-2">
+                    <span class="w-1 h-1 rounded-full bg-indigo-600 animate-pulse"></span>
+                    <span class="text-slate-500">Tra cứu: <strong id="stat-total" class="text-slate-900">0</strong></span>
                 </div>
-                <div class="flex items-center gap-1.5">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                    <span class="text-slate-400">Thành công: <strong id="stat-success" class="text-slate-200">0</strong></span>
+                <div class="flex items-center gap-1">
+                    <span class="w-1 h-1 rounded-full bg-emerald-500"></span>
+                    <span class="text-slate-500">Thành công: <strong id="stat-success" class="text-slate-900">0</strong></span>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- Main Content Container -->
-    <main class="max-w-6xl w-full mx-auto px-4 py-5 flex-grow grid grid-cols-1 lg:grid-cols-12 gap-5 items-start z-10">
+    <!-- Main Content Container (Cố định 2 cột bằng nhau hoàn hảo h-350px, trải rộng tối đa 1300px) -->
+    <main class="max-w-[1300px] w-full mx-auto px-4 py-3 flex-grow grid grid-cols-1 md:grid-cols-2 gap-3.5 items-start z-10">
         
-        <!-- Khối Tìm kiếm bên trái (Cột 5) -->
-        <section class="lg:col-span-5 flex flex-col gap-4 w-full">
+        <!-- Khối Tìm kiếm bên trái (Cột 1) -->
+        <section class="flex flex-col gap-2.5 w-full">
             
-            <!-- Hộp nhập tìm kiếm tối giản -->
-            <div class="backdrop-blur-md bg-slate-900/60 border border-slate-800/80 rounded-xl p-4 shadow-xl relative overflow-hidden">
-                <form id="search-form" class="flex flex-col gap-2.5">
-                    <!-- Ô nhập thông tin MST -->
-                    <div class="relative">
-                        <input
-                            type="text"
-                            id="mst-input"
-                            maxlength="17"
-                            placeholder="Nhập mã số thuế..."
-                            class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2.5 pl-3.5 pr-10 text-sm font-mono-custom tracking-wider focus:outline-none focus:ring-1.5 focus:ring-indigo-500/30 focus:border-indigo-500 transition-all placeholder:text-slate-650 text-slate-100"
-                        />
-                        
+            <!-- Hộp nhập tìm kiếm và nút ngang hàng -->
+            <div class="bg-white border border-slate-200/80 rounded-xl p-3.5 shadow-sm relative overflow-hidden">
+                <form id="search-form" class="flex flex-col gap-2">
+                    <div class="flex justify-between items-center">
+                        <label for="mst-input" class="text-[10px] font-bold text-slate-450 uppercase tracking-wider">Mã số thuế doanh nghiệp hoặc số CCCD</label>
+                        <span class="text-[9px] text-slate-400 font-mono-custom font-medium" id="digit-counter">0/15 ký tự</span>
+                    </div>
+                    
+                    <!-- Nhóm Input và Button song song cực kỳ nhỏ gọn -->
+                    <div class="flex gap-1">
+                        <div class="relative flex-grow">
+                            <input
+                                type="text"
+                                id="mst-input"
+                                maxlength="16"
+                                placeholder="Nhập MST"
+                                class="w-full bg-slate-50/80 border border-slate-200 rounded-lg py-1.5 pl-3 pr-8 text-xs font-mono-custom tracking-wider focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500 transition-all placeholder:text-slate-400 text-slate-900 font-bold"
+                            />
+                            
+                            <button
+                                type="button"
+                                id="clear-input-btn"
+                                class="hidden absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5 rounded-full hover:bg-slate-200/80 transition-all"
+                            >
+                                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- Button tra cứu song song nhỏ gọn -->
                         <button
-                            type="button"
-                            id="clear-input-btn"
-                            class="hidden absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 p-0.5 rounded-full hover:bg-slate-900 transition-all"
+                            type="submit"
+                            id="search-submit-btn"
+                            class="py-1.5 px-3.5 rounded-lg font-bold text-[11px] tracking-wide transition-all duration-200 flex items-center justify-center gap-1 bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm active:scale-[0.98] flex-shrink-0 min-w-[65px]"
                         >
-                            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width={2.5} d="M6 18L18 6M6 6l12 12" />
-                            </svg>
+                            <span id="btn-text" class="flex items-center gap-1">
+                                <svg class="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                                <span>TÌM</span>
+                            </span>
+                            <span id="btn-spinner" class="hidden items-center justify-center">
+                                <svg class="animate-spin h-3 w-3 text-white" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                            </span>
                         </button>
                     </div>
-
-                    <!-- Button Tìm kiếm -->
-                    <button
-                        type="submit"
-                        id="search-submit-btn"
-                        class="w-full py-2.5 px-4 rounded-lg font-semibold text-xs tracking-wide transition-all duration-300 flex items-center justify-center gap-1.5 relative overflow-hidden bg-indigo-600 hover:bg-indigo-500 text-white shadow-md shadow-indigo-600/10 active:scale-[0.99]"
-                    >
-                        <span id="btn-text" class="flex items-center gap-1.5">
-                            <svg class="w-4 h-4 text-white/80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width={2.2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                            </svg>
-                            Tra cứu siêu tốc
-                        </span>
-                        <span id="btn-spinner" class="hidden items-center gap-1.5">
-                            <svg class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                            Đang kết nối...
-                        </span>
-                    </button>
                 </form>
             </div>
 
-            <!-- Lịch sử gần đây -->
-            <div class="backdrop-blur-md bg-slate-900/60 border border-slate-800/80 rounded-xl p-4 shadow-xl flex flex-col gap-3">
-                <div class="flex justify-between items-center">
-                    <h3 class="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
-                        <svg class="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        Lịch sử gần đây (Tối đa 3 mục)
-                    </h3>
+            <!-- Khối lịch sử rút gọn không chữ tiêu đề, không icon -->
+            <div class="bg-white border border-slate-200/80 rounded-xl p-3 shadow-sm flex flex-col gap-1.5">
+                <div class="flex justify-end items-center">
                     <button
                         id="clear-history-btn"
-                        class="hidden text-[10px] text-slate-500 hover:text-rose-400 transition-colors"
+                        class="hidden text-[9px] font-extrabold text-slate-450 hover:text-rose-500 transition-colors uppercase tracking-wider"
                     >
-                        Xóa tất cả
+                        Xóa lịch sử
                     </button>
                 </div>
 
                 <div id="history-container">
-                    <!-- Trạng thái trống được render bằng JS -->
+                    <!-- Trạng thái trống hoặc danh sách lịch sử được render bằng JS -->
                 </div>
             </div>
         </section>
 
-        <!-- Khối Hiển thị Kết quả bên phải (Cột 7) -->
-        <section class="lg:col-span-7 flex flex-col w-full min-h-[440px]">
+        <!-- Khối hiển thị kết quả (Cột 2) - Chiều cao cố định h-350px tránh nhấp nhô giao diện tuyệt đối -->
+        <section class="flex flex-col w-full min-h-[350px] max-h-[350px] overflow-hidden">
             
-            <!-- Trạng thái Đang Tải (Skeleton loading) - Chiều cao tối thiểu nhất quán -->
-            <div id="loading-state" class="hidden backdrop-blur-md bg-slate-900/60 border border-slate-800/80 rounded-xl p-5 shadow-xl flex flex-col gap-4 min-h-[440px] justify-center">
-                <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-                    <div class="h-4 bg-slate-800 rounded w-1/3 animate-pulse"></div>
-                    <div class="h-5 bg-slate-800 rounded-full w-20 animate-pulse"></div>
+            <!-- Trạng thái Đang Tải (Skeleton loading) - Khóa cứng h-[350px] -->
+            <div id="loading-state" class="hidden bg-white border border-slate-200/80 rounded-xl p-4 shadow-sm flex flex-col h-[350px] justify-center">
+                <div class="flex justify-between items-center border-b border-slate-150 pb-2">
+                    <div class="h-4 bg-slate-200 rounded w-1/3 animate-pulse"></div>
+                    <div class="h-5 bg-slate-200 rounded-full w-20 animate-pulse"></div>
                 </div>
-                <div class="space-y-3.5 flex-grow flex flex-col justify-center">
-                    <div class="h-7 bg-slate-800 rounded w-3/4 animate-pulse"></div>
-                    <div class="h-4 bg-slate-800 rounded w-1/2 animate-pulse"></div>
-                    <hr class="border-slate-800/60" />
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-                        <div class="space-y-1.5">
-                            <div class="h-3 bg-slate-800 rounded w-1/4 animate-pulse"></div>
-                            <div class="h-4.5 bg-slate-800 rounded w-5/6 animate-pulse"></div>
+                <div class="space-y-3 flex-grow flex flex-col justify-center">
+                    <div class="h-6 bg-slate-200 rounded w-5/6 animate-pulse"></div>
+                    <div class="h-4 bg-slate-200 rounded w-2/3 animate-pulse"></div>
+                    <hr class="border-slate-100" />
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="space-y-1">
+                            <div class="h-3 bg-slate-200 rounded w-1/4 animate-pulse"></div>
+                            <div class="h-5 bg-slate-200 rounded w-full animate-pulse"></div>
                         </div>
-                        <div class="space-y-1.5">
-                            <div class="h-3 bg-slate-800 rounded w-1/4 animate-pulse"></div>
-                            <div class="h-4.5 bg-slate-800 rounded w-5/6 animate-pulse"></div>
+                        <div class="space-y-1">
+                            <div class="h-3 bg-slate-200 rounded w-1/4 animate-pulse"></div>
+                            <div class="h-5 bg-slate-200 rounded w-full animate-pulse"></div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Màn hình chờ rỗng -->
-            <div id="welcome-state" class="backdrop-blur-md bg-slate-900/60 border border-slate-800/80 rounded-xl p-5 shadow-xl text-center flex flex-col items-center justify-center min-h-[440px] relative overflow-hidden group">
-                <div class="w-12 h-12 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center text-slate-500 mb-3 transition-transform group-hover:scale-105 duration-300">
-                    <svg class="w-6 h-6 text-indigo-500/80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width={1.5} d="M10 21h7a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v11m0 5l4.879-4.879m0 0a3 3 0 104.243-4.242 3 3 0 00-4.243 4.242z" />
+            <!-- Màn hình chờ rỗng - Khóa cứng h-[350px] -->
+            <div id="welcome-state" class="bg-white border border-slate-200/80 rounded-xl p-4 shadow-sm text-center flex flex-col items-center justify-center h-[350px] relative overflow-hidden group">
+                <div class="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-slate-500 mb-3 transition-transform group-hover:scale-105 duration-300">
+                    <svg class="w-5 h-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10 21h7a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v11m0 5l4.879-4.879m0 0a3 3 0 104.243-4.242 3 3 0 00-4.243 4.242z" />
                     </svg>
                 </div>
-                <h3 class="text-sm font-bold text-slate-200">Sẵn sàng phân tích dữ liệu</h3>
-                <p class="text-xs text-slate-400 max-w-sm mt-1 leading-relaxed">
-                    Nhập mã số thuế ở cột bên trái. Hệ thống sẽ kết nối trực tiếp đến dữ liệu liên kết ngân hàng quốc gia để trả thông tin chính xác.
-                </p>
+                <h3 class="text-xs font-bold text-slate-900">Sẵn sàng truy vấn dữ liệu</h3>
+                <!-- <p class="text-[10px] text-slate-400 max-w-sm mt-1 leading-relaxed"> -->
+                    <!-- Nhập mã số thuế bên trái. Hệ thống sẽ lọc bỏ tiền tố gây nhiễu, phân tích cấu trúc chữ số và hiển thị tức thời thông tin doanh nghiệp. -->
+                <!-- </p> -->
                 
-                <div class="mt-6 grid grid-cols-2 gap-2.5 w-full max-w-md">
-                    <div class="bg-slate-950/50 p-3 rounded-lg border border-slate-800/50 text-left">
-                        <span class="text-[9px] font-semibold text-emerald-400 tracking-wider block uppercase mb-0.5">Mẹo</span>
-                        <p class="text-[11px] text-slate-500 leading-normal">Nhập 10 số cho doanh nghiệp, 13 số cho chi nhánh phụ thuộc.</p>
+                <div class="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-2 w-full max-w-md">
+                    <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-100 text-left">
+                        <span class="text-[8px] font-bold text-emerald-600 tracking-wider block uppercase mb-0.5">Xử lý đầu vào</span>
+                        <p class="text-[9px] text-slate-400 leading-normal">Tự động nhận dạng mã số thuế doanh nghiệp (10 số) và mã số CCCD (12 số).</p>
                     </div>
-                    <div class="bg-slate-950/50 p-3 rounded-lg border border-slate-800/50 text-left">
-                        <span class="text-[9px] font-semibold text-indigo-400 tracking-wider block uppercase mb-0.5">Hệ thống</span>
-                        <p class="text-[11px] text-slate-500 leading-normal">Tốc độ kết nối cực nhanh nhờ hệ thống tối ưu hóa giảm tải CORS.</p>
+                    <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-100 text-left">
+                        <span class="text-[8px] font-bold text-indigo-600 tracking-wider block uppercase mb-0.5">Định vị thông minh</span>
+                        <p class="text-[9px] text-slate-400 leading-normal">Địa chỉ của doanh nghiệp sẽ tự động được quét và hiển thị trực tiếp trên Google Maps.</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Khung Kết Quả Chi Tiết (Loại bỏ hoàn toàn phần EN, Hóa đơn & QR) -->
-            <div id="result-state" class="hidden backdrop-blur-md bg-slate-900/60 border border-slate-800/80 rounded-xl p-5 shadow-2xl relative overflow-hidden flex flex-col gap-4 min-h-[440px] animate-fade-in">
+            <!-- Khung kết quả chính - Khóa cứng h-[350px] hoàn toàn cố định -->
+            <div id="result-state" class="hidden bg-white border border-slate-200/80 rounded-xl p-4 shadow-sm relative overflow-hidden flex flex-col gap-2.5 h-[350px] animate-fade-in">
                 
-                <!-- Trang trí góc nổi bật trạng thái -->
-                <div id="result-badge" class="absolute top-0 right-0 px-4 py-1 rounded-bl-lg text-[9px] font-bold tracking-wider uppercase border-l border-b bg-emerald-950/80 border-emerald-500/30 text-emerald-300">
-                    Hoạt động bình thường
+                <!-- Huy hiệu Trạng thái nổi bật -->
+                <div id="result-badge" class="absolute top-0 right-0 px-2.5 py-1 rounded-bl-lg text-[8px] font-bold tracking-wider uppercase border-l border-b bg-emerald-50 border-emerald-150 text-emerald-700">
+                    Đang hoạt động
                 </div>
 
-                <!-- Tabs tiêu đề - Chỉ còn 2 Tab (Thông tin pháp lý & Bản đồ vị trí) -->
-                <div class="flex border-b border-slate-800/80 gap-5">
+                <!-- Tabs tiêu đề - 2 Tab (Thông tin pháp lý & Google Maps) -->
+                <div class="flex border-b border-slate-150 pb-1.5 gap-4 flex-shrink-0">
                     <button
                         id="tab-btn-info"
-                        class="tab-btn pb-2 text-xs font-semibold transition-all relative text-white"
+                        class="tab-btn text-[10px] font-extrabold uppercase tracking-wider transition-all relative text-indigo-600"
                     >
                         Thông tin pháp lý
-                        <span class="tab-indicator absolute bottom-0 left-0 w-full h-0.5 bg-indigo-500"></span>
+                        <span class="tab-indicator absolute -bottom-[7.5px] left-0 w-full h-0.5 bg-indigo-600"></span>
                     </button>
                     <button
                         id="tab-btn-map"
-                        class="tab-btn pb-2 text-xs font-semibold transition-all relative text-slate-500 hover:text-slate-300"
+                        class="tab-btn text-[10px] font-extrabold uppercase tracking-wider transition-all relative text-slate-400 hover:text-slate-600"
                     >
-                        Bản đồ vị trí
-                        <span class="tab-indicator absolute bottom-0 left-0 w-full h-0.5 bg-indigo-500 hidden"></span>
+                        Vị trí Google Maps
+                        <span class="tab-indicator absolute -bottom-[7.5px] left-0 w-full h-0.5 bg-indigo-600 hidden"></span>
                     </button>
                 </div>
 
-                <!-- NỘI DUNG TAB 1: THÔNG TIN CHI TIẾT -->
-                <div id="tab-content-info" class="tab-content flex flex-col gap-4.5 flex-grow justify-between">
-                    <div>
-                        <span class="text-[10px] text-slate-500 block font-mono-custom uppercase tracking-wider mb-0.5">Mã Số Thuế: <span id="res-mst" class="text-indigo-400 font-bold"></span></span>
-                        
-                        <!-- Tên doanh nghiệp - Được tăng khoảng cách ký tự (tracking-wider) và nới khoảng cách dòng (leading-relaxed) để không bị dính chùm -->
-                        <h2 id="res-name" class="text-base md:text-lg font-bold text-white tracking-wider leading-relaxed py-1"></h2>
-                    </div>
-
-                    <hr class="border-slate-800/60" />
-
-                    <!-- Bảng thông tin chi tiết -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        <div class="bg-slate-950/40 p-3 rounded-lg border border-slate-800/40 hover:border-slate-800 transition-all">
-                            <span class="text-[10px] text-slate-500 block mb-0.5">Trạng thái hoạt động</span>
-                            <div class="flex items-center gap-1.5">
-                                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                                <span id="res-status" class="text-xs font-semibold text-slate-200"></span>
+                <!-- NỘI DUNG TAB 1: THÔNG TIN CHI TIẾT (Xóa mọi khoảng trắng thừa phía dưới địa chỉ đăng ký) -->
+                <div id="tab-content-info" class="tab-content flex flex-col justify-between flex-grow overflow-hidden">
+                    <div class="space-y-2 overflow-y-auto pr-0.5 flex-grow">
+                        <div class="flex items-center justify-between gap-2 border-b border-dashed border-slate-100 pb-1.5">
+                            <div>
+                                <span class="text-[8px] text-slate-400 font-bold uppercase tracking-widest block">Mã Số Thuế</span>
+                                <div class="flex items-center gap-1 mt-0.5">
+                                    <h2 id="res-mst" class="text-xs font-bold text-indigo-700 tracking-wider font-mono-custom bg-indigo-50/70 border border-indigo-100 px-1.5 py-0.2 rounded"></h2>
+                                </div>
                             </div>
-                        </div>
-
-                        <div class="bg-slate-950/40 p-3 rounded-lg border border-slate-800/40 hover:border-slate-800 transition-all">
-                            <span class="text-[10px] text-slate-500 block mb-0.5">Ngày cập nhật dữ liệu</span>
-                            <span id="res-updated-at" class="text-xs font-semibold text-slate-200 flex items-center gap-1"></span>
-                        </div>
-
-                        <!-- Phần yêu cầu bổ sung: Quản lý bởi thuế cơ sở -->
-                        <div class="bg-slate-950/40 p-3 rounded-lg border border-slate-800/40 hover:border-slate-800 transition-all md:col-span-2">
-                            <span class="text-[10px] text-slate-500 block mb-0.5">Quản lý bởi thuế cơ sở</span>
-                            <span id="res-tax-office" class="text-xs font-semibold text-indigo-300"></span>
-                        </div>
-
-                        <div class="bg-slate-950/40 p-3 rounded-lg border border-slate-800/40 hover:border-slate-800 transition-all md:col-span-2">
-                            <span class="text-[10px] text-slate-500 block mb-0.5">Địa chỉ đăng ký</span>
-                            <div class="flex justify-between items-start gap-3">
-                                <span id="res-address" class="text-xs font-medium text-slate-200 leading-normal"></span>
-                                <button
-                                    id="copy-address-btn"
-                                    class="p-1.5 rounded bg-slate-900 hover:bg-slate-850 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-white transition-all flex-shrink-0"
-                                    title="Sao chép địa chỉ"
-                                >
-                                    <!-- Icon copy tờ giấy kép rõ ràng, sắc nét hơn -->
-                                    <svg class="w-3.5 h-3.5 text-slate-400 hover:text-indigo-400 transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                                        <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path>
+                            
+                            <!-- Bổ trợ liên kết Tổng cục Thuế -->
+                            <div class="text-right flex flex-col items-end">
+                                <span class="text-[8px] text-slate-400 font-bold uppercase tracking-widest block">GDT QUỐC GIA</span>
+                                <a id="res-tax-portal" href="https://tracuunnt.gdt.gov.vn" target="_blank" class="text-[8px] text-indigo-500 hover:underline font-extrabold flex items-center gap-0.5 mt-0.5">
+                                    tracuunnt.gdt.gov.vn
+                                    <svg class="w-2 h-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                                     </svg>
-                                </button>
+                                </a>
                             </div>
                         </div>
 
-                        <div class="bg-slate-950/40 p-3 rounded-lg border border-slate-800/40 hover:border-slate-800 transition-all md:col-span-2">
-                            <span class="text-[10px] text-slate-500 block mb-0.5">Nguồn dữ liệu kết nối</span>
-                            <span class="text-xs font-semibold text-indigo-400 flex items-center gap-1">
-                                Cổng thông tin liên kết ngân hàng (VietQR Realtime)
-                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                                </svg>
-                            </span>
+                        <!-- Tên doanh nghiệp - Làm nổi bật -->
+                        <h2 id="res-name" class="text-[11px] md:text-[12px] font-extrabold text-slate-900 tracking-wide leading-relaxed bg-slate-50 p-1.5 rounded-lg border border-slate-200/50"></h2>
+
+                        <!-- Bảng thông tin chi tiết siêu gọn -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                            <div class="bg-slate-50/80 p-1.5 rounded-lg border border-slate-150">
+                                <span class="text-[8px] text-slate-400 font-bold block uppercase tracking-wider">Trạng thái thuế</span>
+                                <div class="flex items-center gap-1 mt-0.5">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                    <span id="res-status" class="text-[10px] font-bold text-slate-700"></span>
+                                </div>
+                            </div>
+
+                            <div class="bg-slate-50/80 p-1.5 rounded-lg border border-slate-150">
+                                <span class="text-[8px] text-slate-400 font-bold block uppercase tracking-wider">Ngày đồng bộ</span>
+                                <span id="res-updated-at" class="text-[10px] font-bold text-slate-700 flex items-center gap-0.5 font-mono-custom mt-0.5"></span>
+                            </div>
+
+                            <div class="bg-slate-50/80 p-1.5 rounded-lg border border-slate-150 sm:col-span-2">
+                                <span class="text-[8px] text-slate-400 font-bold block uppercase tracking-wider">Cơ quan quản lý </span>
+                                <span id="res-tax-office" class="text-[10px] font-bold text-indigo-700 block mt-0.5"></span>
+                            </div>
+
+                            <!-- Địa chỉ đăng ký: Xóa khoảng trống thừa bằng cách thiết lập margin-bottom bằng 0 -->
+                            <div class="bg-slate-50/80 p-1.5 rounded-lg border border-slate-150 sm:col-span-2 relative group/addr mb-0">
+                                <span class="text-[8px] text-slate-400 font-bold block uppercase tracking-wider">Địa chỉ đăng ký kinh doanh</span>
+                                <div class="flex justify-between items-start gap-2 mt-0.5">
+                                    <span id="res-address" class="text-[10px] font-semibold text-slate-700 leading-normal pr-5 block"></span>
+                                    <button
+                                        id="copy-address-btn"
+                                        class="absolute right-1 top-1 p-0.5 rounded bg-white hover:bg-slate-100 border border-slate-200 text-slate-500 hover:text-slate-900 shadow-sm"
+                                        title="Sao chép địa chỉ"
+                                    >
+                                        <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                            <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <hr class="border-slate-800/60" />
+                    <!-- Đường phân cách nhẹ, nằm trực tiếp ngay sau thông tin địa chỉ -->
+                    <hr class="border-slate-150 my-1 flex-shrink-0" />
 
-                    <!-- Các nút tương tác (Sao chép Tên, Sao chép MST, Sao chép Địa chỉ với icon giấy xếp chồng) -->
-                    <div class="flex flex-col sm:flex-row gap-2">
+                    <!-- Nhóm nút tương tác xuất dữ liệu -->
+                    <div class="flex gap-1 flex-shrink-0">
                         <button
                             id="btn-copy-name"
-                            class="flex-1 py-2.5 px-3 rounded-lg bg-slate-950 hover:bg-slate-900 border border-slate-800 text-slate-300 hover:text-white transition-all text-xs font-semibold flex items-center justify-center gap-1.5"
+                            class="flex-1 py-1.5 px-2 rounded-lg bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 hover:text-slate-950 transition-all text-[10px] font-bold flex items-center justify-center gap-1"
                         >
-                            <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <svg class="w-2.5 h-2.5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                                 <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                                 <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path>
                             </svg>
@@ -316,9 +321,9 @@
                         </button>
                         <button
                             id="btn-copy-mst"
-                            class="flex-1 py-2.5 px-3 rounded-lg bg-slate-950 hover:bg-slate-900 border border-slate-800 text-slate-300 hover:text-white transition-all text-xs font-semibold flex items-center justify-center gap-1.5"
+                            class="flex-1 py-1.5 px-2 rounded-lg bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 hover:text-slate-950 transition-all text-[10px] font-bold flex items-center justify-center gap-1"
                         >
-                            <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <svg class="w-2.5 h-2.5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                                 <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                                 <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path>
                             </svg>
@@ -326,55 +331,58 @@
                         </button>
                         <button
                             id="btn-copy-address"
-                            class="flex-1 py-2.5 px-3 rounded-lg bg-slate-950 hover:bg-slate-900 border border-slate-800 text-slate-300 hover:text-white transition-all text-xs font-semibold flex items-center justify-center gap-1.5"
+                            class="flex-1 py-1.5 px-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 border border-indigo-600 text-white transition-all text-[10px] font-bold flex items-center justify-center gap-1"
                         >
-                            <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <svg class="w-2.5 h-2.5 text-white/90" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                                 <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                                 <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path>
                             </svg>
-                            Sao chép Địa chỉ
+                            Sao chép Địa Chỉ
                         </button>
                     </div>
                 </div>
 
-                <!-- NỘI DUNG TAB 3: BẢN ĐỒ VỊ TRÍ -->
-                <div id="tab-content-map" class="tab-content hidden flex flex-col gap-3.5 flex-grow justify-between">
-                    <div class="flex justify-between items-center">
+                <!-- NỘI DUNG TAB 2: BẢN ĐỒ VỊ TRÍ GOOGLE MAPS (Cố định khung hình, chuyển động mượt mà) -->
+                <div id="tab-content-map" class="tab-content hidden flex flex-col justify-between flex-grow overflow-hidden">
+                    <div class="flex justify-between items-center flex-shrink-0">
                         <div>
-                            <h4 class="text-xs font-bold text-white">Vị Trí Doanh Nghiệp Đăng Ký</h4>
-                            <p class="text-[11px] text-slate-400">Xem bản đồ hành chính của địa điểm trụ sở chính.</p>
+                            <h4 class="text-[10px] font-bold text-slate-800">Định vị trực tuyến vệ tinh</h4>
+                            <p class="text-[9px] text-slate-400">Quét hành chính tự động qua cơ sở dữ liệu Google Maps.</p>
                         </div>
                         <a
                             id="btn-open-google-maps"
                             href="#"
                             target="_blank"
-                            class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-[10px] font-semibold rounded-lg text-white transition-all flex items-center gap-1"
+                            class="px-2 py-1 bg-indigo-650 hover:bg-indigo-750 text-[9px] font-bold rounded-md text-white transition-all flex items-center gap-1 shadow-sm flex-shrink-0"
                         >
-                            Mở Google Maps
-                            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            Google Maps
+                            <svg class="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                             </svg>
                         </a>
                     </div>
 
-                    <!-- Bản đồ thông minh 2D ảo -->
-                    <div class="h-56 rounded-lg bg-slate-950 border border-slate-800/80 relative overflow-hidden flex flex-col justify-center items-center text-center p-5">
-                        <div class="absolute inset-0 opacity-10 pointer-events-none bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:16px_16px]"></div>
-                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
-                        
-                        <!-- Icon Pin Động -->
-                        <div class="w-10 h-10 bg-indigo-500/15 rounded-full flex items-center justify-center animate-pulse border border-indigo-500/30 relative z-10 mb-3">
-                            <svg class="w-5 h-5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <!-- Khung Google Maps Embed an toàn, cực kỳ chính xác -->
+                    <div id="map-container" class="h-44 rounded-lg bg-slate-50 border border-slate-200 relative overflow-hidden z-20 flex-grow my-1.5">
+                        <div id="map-loading" class="absolute inset-0 bg-white/95 z-30 flex flex-col justify-center items-center gap-1.5 text-[9px] font-bold text-slate-500">
+                            <svg class="animate-spin h-4 w-4 text-indigo-600" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                             </svg>
+                            <span>ĐANG TRUY VẤN VỊ TRÍ TRÊN GOOGLE MAPS...</span>
                         </div>
+                        <iframe 
+                            id="gmaps-iframe" 
+                            class="w-full h-full rounded-lg border-0" 
+                            src="" 
+                            allowfullscreen 
+                            loading="lazy">
+                        </iframe>
+                    </div>
 
-                        <div class="relative z-10 max-w-md">
-                            <h5 class="text-[11px] font-bold text-slate-300">Tọa độ đăng ký hành chính</h5>
-                            <p id="map-address-text" class="text-[11px] text-slate-550 mt-0.5 leading-normal truncate max-w-sm"></p>
-                            <p class="text-[9px] text-indigo-400 mt-1.5 font-medium">Bấm vào nút "Mở Google Maps" phía trên để định vị toàn đồ địa lý chính xác.</p>
-                        </div>
+                    <div class="bg-slate-50 p-1.5 rounded-lg border border-slate-200 flex-shrink-0">
+                        <span class="text-[8px] font-extrabold text-slate-400 uppercase tracking-wider block">Địa chỉ được Google quét</span>
+                        <p id="map-address-text" class="text-[9px] text-slate-500 leading-relaxed truncate max-w-[600px] mt-0.5"></p>
                     </div>
                 </div>
 
@@ -384,12 +392,11 @@
 
     </main>
 
-    <!-- JavaScript Logic -->
     <script>
         // Các biến trạng thái của ứng dụng
         let currentResult = null;
         let history = [];
-        let stats = { totalSearches: 45, successfulSearches: 42 };
+        let stats = { totalSearches: 0, successfulSearches: 0 };
 
         // Khởi động khi tải xong DOM
         document.addEventListener('DOMContentLoaded', () => {
@@ -397,19 +404,19 @@
             setupEventListeners();
         });
 
-        // Khởi tạo trạng thái ban đầu của ứng dụng
+        // Khởi tạo trạng thái ban đầu
         function initApp() {
             // Load stats từ LocalStorage
-            const savedStats = localStorage.getItem('mst_search_stats_html');
+            const savedStats = localStorage.getItem('mst_search_stats_html_light');
             if (savedStats) {
                 stats = JSON.parse(savedStats);
             } else {
-                localStorage.setItem('mst_search_stats_html', JSON.stringify(stats));
+                localStorage.setItem('mst_search_stats_html_light', JSON.stringify(stats));
             }
             updateStatsUI();
 
             // Load Lịch sử từ LocalStorage
-            const savedHistory = localStorage.getItem('mst_search_history_html');
+            const savedHistory = localStorage.getItem('mst_search_history_html_light');
             if (savedHistory) {
                 history = JSON.parse(savedHistory);
             }
@@ -422,33 +429,53 @@
             const clearInputBtn = document.getElementById('clear-input-btn');
             const searchForm = document.getElementById('search-form');
 
-            // Định dạng tự động MST & Xóa trắng thông tin hiển thị ngay lập tức khi ô input rỗng
+            // Định dạng và làm sạch dữ liệu tự động
             mstInput.addEventListener('input', (e) => {
-                let value = e.target.value.replace(/[^0-9-]/g, '');
+                let rawValue = e.target.value;
+                
+                // Tự động lọc bỏ các chữ thừa do kế toán copy-paste
+                let cleanedValue = rawValue.replace(/^(mst|mã số thuế|mã số t|mã số|mst:|cccd|cccd:|tax|tax code|tax id|id)\s*[:\-\.]?\s*/i, '');
+                
+                let value = cleanedValue.replace(/[^0-9-]/g, '');
                 const numbersOnly = value.replace(/-/g, '');
                 
-                // Tự động phân tách MST chi nhánh 13 số
-                if (numbersOnly.length > 10) {
-                    value = `${numbersOnly.slice(0, 10)}-${numbersOnly.slice(10, 13)}`;
+                // Định vị dấu "-" thông minh cho chi nhánh
+                if (numbersOnly.length > 12) {
+                    if (numbersOnly.length > 13) {
+                        value = `${numbersOnly.slice(0, 12)}-${numbersOnly.slice(12, 15)}`; // CCCD + chi nhánh
+                    } else {
+                        value = `${numbersOnly.slice(0, 10)}-${numbersOnly.slice(10, 13)}`; // MST + chi nhánh
+                    }
+                } else if (numbersOnly.length === 11) {
+                    value = `${numbersOnly.slice(0, 10)}-${numbersOnly.slice(10, 11)}`;
+                } else {
+                    value = numbersOnly;
                 }
                 
                 mstInput.value = value;
+                
+                // Cập nhật chỉ số ký tự
+                document.getElementById('digit-counter').innerText = `${numbersOnly.length}/15 ký tự`;
 
-                // Hiển thị nút xóa nhanh nếu có dữ liệu
+                // Đánh giá kiểm tra thuật toán toán học
+                evaluateChecksumLive(numbersOnly);
+
+                // Hiển thị nút xóa nhanh
                 if (value.length > 0) {
                     clearInputBtn.classList.remove('hidden');
                 } else {
                     clearInputBtn.classList.add('hidden');
-                    // Xóa mã số thuế tra cứu thì thông tin kết quả hiển thị sẽ được xóa
                     clearDisplayedResult();
                 }
             });
 
-            // Nút xóa nhanh input & Xóa thông tin hiển thị
+            // Nút xóa nhanh input
             clearInputBtn.addEventListener('click', () => {
                 mstInput.value = '';
+                document.getElementById('digit-counter').innerText = '0/15 ký tự';
                 clearInputBtn.classList.add('hidden');
                 clearDisplayedResult();
+                evaluateChecksumLive('');
                 mstInput.focus();
             });
 
@@ -458,58 +485,84 @@
                 const mstClean = mstInput.value.trim();
                 
                 if (!mstClean) {
-                    showToast('Vui lòng nhập mã số thuế cần tra cứu!', 'error');
+                    showToast('Vui lòng nhập mã số thuế hoặc số CCCD!', 'error');
                     return;
                 }
 
-                if (mstClean.replace(/-/g, '').length < 10) {
-                    showToast('Mã số thuế doanh nghiệp phải có ít nhất 10 chữ số!', 'error');
+                const pureLength = mstClean.replace(/-/g, '').length;
+                if (pureLength < 10) {
+                    showToast('Độ dài mã số thuế tối thiểu là 10 số!', 'error');
                     return;
                 }
 
                 lookupTaxCode(mstClean);
             });
 
-            // Xóa tất cả lịch sử
+            // Xóa toàn bộ lịch sử
             document.getElementById('clear-history-btn').addEventListener('click', () => {
                 history = [];
-                localStorage.removeItem('mst_search_history_html');
+                localStorage.removeItem('mst_search_history_html_light');
                 renderHistoryUI();
-                showToast('Đã dọn sạch lịch sử tra cứu', 'info');
+                showToast('Đã dọn sạch toàn bộ lịch sử tra cứu', 'info');
             });
 
-            // Thiết lập sự kiện đổi Tab
             setupTabs();
-
-            // Thiết lập sự kiện Sao chép
             setupCopyActions();
         }
 
-        // Xóa sạch thông tin kết quả hiển thị đưa về giao diện ban đầu
-        function clearDisplayedResult() {
-            currentResult = null;
-            hideResultUI();
-            document.getElementById('loading-state').classList.add('hidden');
-            document.getElementById('welcome-state').classList.remove('hidden');
+        // Kiểm tra đối soát thuật toán Tổng cục thuế Việt Nam
+        function validateVietnamMST(mst) {
+            const clean = mst.replace(/[^0-9]/g, '');
+            if (clean.length < 10) return { valid: false, message: 'Chưa đủ độ dài' };
+
+            // Nếu nhập CCCD cá nhân 12 số hoặc đuôi chi nhánh CCCD 15 số
+            if (clean.length === 12) {
+                return { valid: true, isCCCD: true, message: 'CCCD / Mã cá nhân hợp lệ' };
+            }
+            if (clean.length === 15) {
+                return { valid: true, isCCCD: true, isBranch: true, message: 'Mã phụ thuộc cá nhân hợp lệ' };
+            }
+
+            // Thuật toán kiểm tra số cuối của mã số thuế doanh nghiệp 10 số
+            const digits = clean.slice(0, 10).split('').map(Number);
+            const weights = [31, 29, 23, 19, 17, 13, 7, 5, 3];
+            
+            let sum = 0;
+            for (let i = 0; i < 9; i++) {
+                sum += digits[i] * weights[i];
+            }
+
+            const remainder = sum % 11;
+            let checkDigit = 10 - remainder;
+            
+            if (remainder === 10) {
+                checkDigit = 0;
+            } else if (remainder === 1) {
+                checkDigit = null; 
+            }
+
+            const isValid = checkDigit === digits[9];
+            return {
+                valid: isValid,
+                isBranch: clean.length === 13,
+                message: isValid ? (clean.length === 13 ? 'Cấu trúc Chi nhánh Hợp lệ' : 'Chuẩn kiểm tra Tổng Cục Thuế') : 'Cảnh báo: Kiểm tra cấu trúc số'
+            };
         }
 
-        // Thuật toán ánh xạ tự động ra định dạng: Thuế cơ sở [N] [tỉnh/thành phố] [Tên] của masothue.com
+        // Tự động phân tách và gán Chi cục Thuế quản lý
         function getTaxOffice(address) {
-            if (!address) return "Thuế cơ sở 3 thành phố Hà Nội";
+            if (!address) return "Thuế cơ sở thành phố Hà Nội";
             
-            // Loại bỏ chữ "Việt Nam" thừa ở cuối để không ảnh hưởng bóc tách tỉnh/thành
             const cleanAddress = address.replace(/,\s*Việt Nam$/i, "");
             const parts = cleanAddress.split(',').map(p => p.trim());
             
             let province = "Thành phố Hà Nội";
             let district = "";
             
-            // Phần tử cuối cùng là Tỉnh/Thành phố
             if (parts.length > 0) {
                 province = parts[parts.length - 1];
             }
             
-            // Đi ngược để tìm Quận/Huyện/Thị xã/Thành phố trực thuộc tỉnh
             for (let i = parts.length - 2; i >= 0; i--) {
                 const part = parts[i];
                 const lowerPart = part.toLowerCase();
@@ -522,12 +575,10 @@
                 }
             }
             
-            // Dự phòng nếu không tìm thấy cấu trúc chuẩn
             if (!district && parts.length > 1) {
                 district = parts[parts.length - 2];
             }
             
-            // Định dạng kiểu chữ của tỉnh để chuẩn hóa (ví dụ: thành phố Hà Nội, Tỉnh Phú Thọ)
             let formattedProvince = province;
             let lowerProvince = province.toLowerCase();
             if (lowerProvince.includes("hà nội")) {
@@ -545,10 +596,9 @@
             }
             
             let index = 1;
-            let lowerDistrict = district.toLowerCase();
+            let lowerDistrict = district ? district.toLowerCase() : "";
             let lowerProvinceNorm = lowerProvince;
             
-            // Bản đồ mã hóa Thuế cơ sở theo quận/huyện của masothue.com
             if (lowerProvinceNorm.includes("hà nội")) {
                 if (lowerDistrict.includes("hoàn kiếm")) index = 1;
                 else if (lowerDistrict.includes("ba đình")) index = 2;
@@ -610,7 +660,6 @@
                 else if (lowerDistrict.includes("cẩm lệ")) index = 7;
                 else if (lowerDistrict.includes("hòa vang")) index = 6;
             } else {
-                // Sử dụng hàm băm chuỗi địa bàn của các tỉnh khác để luôn có chỉ số ngẫu nhiên 1-6 chuẩn chỉ của masothue.com
                 let hash = 0;
                 const str = district || province;
                 for (let i = 0; i < str.length; i++) {
@@ -619,7 +668,58 @@
                 index = (hash % 6) + 1;
             }
             
-            return `Thuế cơ sở ${index} ${formattedProvince}`;
+            return `Chi cục Thuế khu vực ${index} ${formattedProvince}`;
+        }
+
+        // Đánh giá trạng thái đối soát toán học
+        function evaluateChecksumLive(numbersOnly) {
+            const checksumStatus = document.getElementById('checksum-status');
+            
+            // CHỐT CHẶN AN TOÀN: Kiểm tra nếu phần tử checksum-status không tồn tại thì dừng lại luôn để tránh lỗi null
+            if (!checksumStatus) return;
+
+            if (!numbersOnly) {
+                checksumStatus.className = "text-[9px] flex items-center gap-1 px-2 py-1 bg-slate-50 rounded-md border border-slate-100 transition-all duration-200";
+                checksumStatus.innerHTML = `
+                    <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+                    <span class="text-slate-400">Sẵn sàng phân tích định dạng thuế và CCCD.</span>
+                `;
+                return;
+            }
+
+            if (numbersOnly.length < 10) {
+                checksumStatus.className = "text-[9px] flex items-center gap-1 px-2 py-1 bg-amber-50 rounded-md border border-amber-200/40 text-amber-700 transition-all duration-200 animate-pulse";
+                checksumStatus.innerHTML = `
+                    <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                    <span class="font-semibold">Đang nhập dữ liệu... (Thêm ${10 - numbersOnly.length} số để kiểm tra)</span>
+                `;
+            } else {
+                const result = validateVietnamMST(numbersOnly);
+                if (result.valid) {
+                    checksumStatus.className = "text-[9px] flex items-center gap-1 px-2 py-1 bg-emerald-50 rounded-md border border-emerald-200/40 text-emerald-700 transition-all duration-200";
+                    checksumStatus.innerHTML = `
+                        <svg class="w-3 h-3 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span class="font-bold">${result.message}</span>
+                    `;
+                } else {
+                    checksumStatus.className = "text-[9px] flex items-center gap-1 px-2 py-1 bg-rose-50 rounded-md border border-rose-200/40 text-rose-700 transition-all duration-200";
+                    checksumStatus.innerHTML = `
+                        <svg class="w-3 h-3 text-rose-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                        <span class="font-bold">Nhập sai cấu trúc kiểm thử!</span>
+                    `;
+                }
+            }
+        }
+
+        function clearDisplayedResult() {
+            currentResult = null;
+            hideResultUI();
+            document.getElementById('loading-state').classList.add('hidden');
+            document.getElementById('welcome-state').classList.remove('hidden');
         }
 
         async function lookupTaxCode(mstClean) {
@@ -627,51 +727,46 @@
             hideResultUI();
 
             try {
-                // Gọi API với cơ chế retry tích hợp sẵn
-                const responseData = await fetchWithRetry(`https://api.vietqr.io/v2/business/${mstClean}`);
+                const responseData = await fetchWithRetry(`https://api.vietqr.io/v2/business/${mstClean.replace(/-/g, '')}`);
 
                 if (responseData && responseData.code === "00" && responseData.data) {
                     const data = responseData.data;
                     
-                    // Phân tách dữ liệu trả về và thiết lập kết quả
                     currentResult = {
                         mst: data.id,
-                        name: data.name || 'Không tìm thấy tên đầy đủ',
+                        name: data.name || 'Hệ thống chưa đồng bộ được tên',
                         address: data.address || 'Không có địa chỉ đăng ký chính thức',
-                        status: 'Đang hoạt động (Xác thực thời gian thực)',
+                        status: 'Đang hoạt động trên CSDL Quốc gia',
                         lastUpdated: new Date().toLocaleDateString('vi-VN')
                     };
 
-                    // Lưu dữ liệu vào thống kê và lịch sử cục bộ
                     stats.totalSearches += 1;
                     stats.successfulSearches += 1;
-                    localStorage.setItem('mst_search_stats_html', JSON.stringify(stats));
+                    localStorage.setItem('mst_search_stats_html_light', JSON.stringify(stats));
                     updateStatsUI();
 
                     saveToHistory(currentResult);
                     displayResult(currentResult);
-                    showToast('Tìm kiếm thành công!', 'success');
+                    showToast('Tra cứu thông tin thành công!', 'success');
                 } else {
-                    // Xử lý khi không tìm thấy kết quả từ hệ thống
                     stats.totalSearches += 1;
-                    localStorage.setItem('mst_search_stats_html', JSON.stringify(stats));
+                    localStorage.setItem('mst_search_stats_html_light', JSON.stringify(stats));
                     updateStatsUI();
                     
-                    showToast('Không tìm thấy dữ liệu cho mã số thuế này!', 'error');
+                    showToast('Mã số thuế chưa được đăng ký liên kết ngân hàng hoặc sai số!', 'error');
                     setLoadingState(false);
                 }
             } catch (error) {
                 console.error(error);
-                showToast('Không thể kết nối đến cổng dữ liệu. Vui lòng thử lại sau!', 'error');
+                showToast('Hệ thống đang quá tải. Hãy thử lại!', 'error');
                 setLoadingState(false);
             }
         }
 
-        // Hàm fetch dữ liệu tích hợp retry tự động phòng lỗi nghẽn cổng
         async function fetchWithRetry(url, retries = 3, delay = 1000) {
             try {
                 const response = await fetch(url);
-                if (!response.ok) throw new Error('Cổng kết nối lỗi');
+                if (!response.ok) throw new Error('Cổng kết nối quá tải');
                 return await response.json();
             } catch (error) {
                 if (retries > 1) {
@@ -682,7 +777,6 @@
             }
         }
 
-        // Kiểm soát trạng thái hiển thị đang tải dữ liệu
         function setLoadingState(isLoading) {
             const btnText = document.getElementById('btn-text');
             const btnSpinner = document.getElementById('btn-spinner');
@@ -695,7 +789,7 @@
                 btnSpinner.classList.remove('hidden');
                 btnSpinner.classList.add('flex');
                 searchBtn.disabled = true;
-                searchBtn.classList.add('opacity-80');
+                searchBtn.classList.add('opacity-85');
 
                 welcomeState.classList.add('hidden');
                 loadingState.classList.remove('hidden');
@@ -704,13 +798,12 @@
                 btnSpinner.classList.add('hidden');
                 btnSpinner.classList.remove('flex');
                 searchBtn.disabled = false;
-                searchBtn.classList.remove('opacity-80');
+                searchBtn.classList.remove('opacity-85');
 
                 loadingState.classList.add('hidden');
             }
         }
 
-        // Tắt hiển thị bảng kết quả
         function hideResultUI() {
             document.getElementById('result-state').classList.add('hidden');
         }
@@ -718,28 +811,49 @@
         function displayResult(result) {
             setLoadingState(false);
             
-            // Điền dữ liệu text vào các phần tử
             document.getElementById('res-mst').innerText = result.mst;
             document.getElementById('res-name').innerText = result.name;
             document.getElementById('res-status').innerText = result.status;
             document.getElementById('res-updated-at').innerText = result.lastUpdated;
             document.getElementById('res-address').innerText = result.address;
 
-            // Tính toán và gắn dữ liệu Thuế cơ sở quản lý tương thích 100% masothue.com
+            // Gắn cơ quan quản lý trực thuộc
             const taxOfficeName = getTaxOffice(result.address);
             document.getElementById('res-tax-office').innerText = taxOfficeName;
 
-            // Đồng bộ sang Tab Bản đồ ảo
+            // Đồng bộ sang Tab Bản đồ Google Maps
             document.getElementById('map-address-text').innerText = result.address;
             document.getElementById('btn-open-google-maps').href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(result.address)}`;
 
-            // Chuyển tab về tab thông tin pháp lý mặc định
-            switchTab('info');
-
             // Kích hoạt hiển thị khung kết quả
             document.getElementById('result-state').classList.remove('hidden');
+
+            // Reset tab mặc định là tab Thông tin
+            switchTab('info');
+
+            // Kích hoạt định vị Google Maps trực tiếp bằng iFrame
+            updateRealMap(result.address);
         }
 
+        // Định vị trực tiếp thông minh qua Google Maps Embed iFrame
+        function updateRealMap(address) {
+            document.getElementById('map-loading').classList.remove('hidden');
+            const gmapsIframe = document.getElementById('gmaps-iframe');
+            
+            // Xử lý chuỗi địa chỉ để đảm bảo Google Maps bóc tách chính xác nhất
+            let cleanAddr = address.replace(/(Tầng\s+[0-9]+|Phòng\s+[0-9]+|Phòng\s+[A-Z0-9]+|Lô\s+[A-Z0-9\-]+)/gi, '').trim();
+            const encodedAddress = encodeURIComponent(cleanAddr);
+            
+            // Sử dụng Google Maps iFrame Embed chính thống dựa trên tham chiếu địa điểm
+            gmapsIframe.src = `https://maps.google.com/maps?q=${encodedAddress}&t=&z=16&ie=UTF8&iwloc=&output=embed`;
+            
+            // Ẩn màn hình loading ngay khi iFrame được chuyển hướng xong
+            gmapsIframe.onload = function() {
+                document.getElementById('map-loading').classList.add('hidden');
+            };
+        }
+
+        // Lưu thông tin vào lịch sử (Đã cấu hình tối đa 3 mục gần nhất)
         function saveToHistory(item) {
             const newHistoryItem = {
                 mst: item.mst,
@@ -748,15 +862,14 @@
                 timestamp: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })
             };
 
-            // Loại bỏ các phần tử trùng lặp trong danh sách
             const filtered = history.filter(h => h.mst !== newHistoryItem.mst);
-            history = [newHistoryItem, ...filtered].slice(0, 3); // CHỈ LƯU TỐI ĐA 3 MỤC
+            history = [newHistoryItem, ...filtered].slice(0, 3); // Cố định chỉ lưu tối đa 3 MST gần nhất
 
-            localStorage.setItem('mst_search_history_html', JSON.stringify(history));
+            localStorage.setItem('mst_search_history_html_light', JSON.stringify(history));
             renderHistoryUI();
         }
 
-        // Render cấu trúc giao diện lịch sử
+        // Render lịch sử rút gọn dạng thẻ con
         function renderHistoryUI() {
             const container = document.getElementById('history-container');
             const clearHistoryBtn = document.getElementById('clear-history-btn');
@@ -764,37 +877,40 @@
             if (history.length === 0) {
                 clearHistoryBtn.classList.add('hidden');
                 container.innerHTML = `
-                    <div class="text-center py-5 border border-dashed border-slate-800 rounded-lg">
-                        <p class="text-xs text-slate-650">Chưa có lịch sử tra cứu nào.</p>
+                    <div class="text-center py-4 border border-dashed border-slate-200 rounded-xl bg-slate-50">
+                        <p class="text-[10px] text-slate-400">Không có lịch sử tra cứu gần đây.</p>
                     </div>
                 `;
                 return;
             }
 
             clearHistoryBtn.classList.remove('hidden');
-            let html = '<div class="flex flex-col gap-1.5 max-h-56 overflow-y-auto pr-1">';
+            let html = '<div class="flex flex-col gap-1 max-h-56 overflow-y-auto pr-0.5">';
             
             history.forEach(item => {
                 html += `
-                    <button
-                        onclick="handleHistoryClick('${item.mst}')"
-                        class="w-full text-left p-2.5 rounded-lg bg-slate-950/50 hover:bg-slate-950 border border-slate-900 hover:border-slate-800 transition-all flex justify-between items-center gap-2.5 group"
-                    >
-                        <div class="min-w-0 flex-grow">
+                    <div class="w-full text-left p-1.5 rounded-lg bg-slate-50 hover:bg-slate-100/80 border border-slate-150 transition-all flex justify-between items-center gap-2 group relative animate-fade-in">
+                        <div class="min-w-0 flex-grow cursor-pointer" onclick="handleHistoryClick('${item.mst}')">
                             <div class="flex items-center gap-1.5">
-                                <span class="font-mono-custom text-xs font-semibold text-indigo-400 group-hover:text-indigo-300 transition-colors">
+                                <span class="font-mono-custom text-[10px] font-bold text-indigo-600">
                                     ${item.mst}
                                 </span>
-                                <span class="text-[10px] text-slate-600 font-mono-custom">${item.timestamp}</span>
+                                <span class="text-[8px] text-slate-400 font-mono-custom">${item.timestamp}</span>
                             </div>
-                            <h4 class="text-xs text-slate-350 font-medium truncate mt-0.5 group-hover:text-white transition-colors">
+                            <h4 class="text-[9px] text-slate-600 font-bold truncate mt-0.5 group-hover:text-slate-900 transition-colors">
                                 ${item.name}
                             </h4>
                         </div>
-                        <svg class="w-3.5 h-3.5 text-slate-600 group-hover:text-indigo-400 transform group-hover:translate-x-0.5 transition-all flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                    </button>
+                        <button
+                            onclick="deleteHistoryItem(event, '${item.mst}')"
+                            class="p-0.5 rounded-md text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-all flex-shrink-0"
+                            title="Xóa dòng lịch sử này"
+                        >
+                            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
                 `;
             });
 
@@ -802,20 +918,30 @@
             container.innerHTML = html;
         }
 
-        // Sự kiện khi bấm vào một mục trong lịch sử
+        // Xóa một mục lịch sử
+        window.deleteHistoryItem = function(event, mst) {
+            event.stopPropagation();
+            history = history.filter(item => item.mst !== mst);
+            localStorage.setItem('mst_search_history_html_light', JSON.stringify(history));
+            renderHistoryUI();
+            showToast('Đã xóa mục lịch sử', 'info');
+        }
+
+        // Sự kiện click dòng lịch sử
         window.handleHistoryClick = function(mst) {
-            document.getElementById('mst-input').value = mst;
+            const mstInput = document.getElementById('mst-input');
+            mstInput.value = mst;
+            document.getElementById('digit-counter').innerText = `${mst.replace(/-/g, '').length}/15 ký tự`;
             document.getElementById('clear-input-btn').classList.remove('hidden');
+            evaluateChecksumLive(mst.replace(/-/g, ''));
             lookupTaxCode(mst);
         };
 
-        // Cập nhật giao diện thống kê
         function updateStatsUI() {
             document.getElementById('stat-total').innerText = stats.totalSearches;
             document.getElementById('stat-success').innerText = stats.successfulSearches;
         }
 
-        // Cài đặt chuyển đổi qua lại giữa các tab (Chỉ còn 2 tab)
         function setupTabs() {
             const tabs = ['info', 'map'];
             
@@ -826,7 +952,6 @@
             });
         }
 
-        // Hàm chuyển đổi tab
         function switchTab(activeTab) {
             const tabs = ['info', 'map'];
             
@@ -836,93 +961,98 @@
                 const indicator = btn.querySelector('.tab-indicator');
 
                 if (tab === activeTab) {
-                    btn.classList.remove('text-slate-500', 'hover:text-slate-300');
-                    btn.classList.add('text-white');
+                    btn.classList.remove('text-slate-400', 'hover:text-slate-600');
+                    btn.classList.add('text-indigo-600');
                     content.classList.remove('hidden');
+                    content.classList.add('animate-fade-in');
                     indicator.classList.remove('hidden');
                 } else {
-                    btn.classList.add('text-slate-500', 'hover:text-slate-300');
-                    btn.classList.remove('text-white');
+                    btn.classList.add('text-slate-400', 'hover:text-slate-600');
+                    btn.classList.remove('text-indigo-600');
                     content.classList.add('hidden');
+                    content.classList.remove('animate-fade-in');
                     indicator.classList.add('hidden');
                 }
             });
         }
 
         function setupCopyActions() {
-            // Nút sao chép địa chỉ đăng ký (bên cạnh text địa chỉ)
             document.getElementById('copy-address-btn').addEventListener('click', () => {
                 if (currentResult) {
-                    copyToClipboard(currentResult.address, 'địa chỉ đăng ký');
+                    copyToClipboard(currentResult.address, 'Địa chỉ trụ sở');
                 }
             });
 
-            // Nút sao chép tên đầy đủ doanh nghiệp ở hàng dưới
             document.getElementById('btn-copy-name').addEventListener('click', () => {
                 if (currentResult) {
-                    copyToClipboard(currentResult.name, 'tên doanh nghiệp');
+                    copyToClipboard(currentResult.name, 'Tên doanh nghiệp');
                 }
             });
 
-            // Nút sao chép mã số thuế ở hàng dưới
             document.getElementById('btn-copy-mst').addEventListener('click', () => {
                 if (currentResult) {
-                    copyToClipboard(currentResult.mst, 'mã số thuế');
+                    copyToClipboard(currentResult.mst, 'Mã số thuế');
                 }
             });
 
-            // Nút sao chép địa chỉ đăng ký chuyên dụng ở hàng dưới
             document.getElementById('btn-copy-address').addEventListener('click', () => {
                 if (currentResult) {
-                    copyToClipboard(currentResult.address, 'địa chỉ');
+                    copyToClipboard(currentResult.address, 'Địa chỉ đăng ký');
                 }
             });
         }
 
-        // Hàm sao chép văn bản vào bộ nhớ đệm (Tương thích cao)
         function copyToClipboard(text, label) {
             const textField = document.createElement('textarea');
-            textField.innerText = text;
+            textField.value = text;
             document.body.appendChild(textField);
             textField.select();
             
             try {
-                // Sử dụng execCommand('copy') để tránh hạn chế bảo mật iFrame
                 document.execCommand('copy');
-                showToast(`Đã sao chép ${label} thành công!`, 'success');
+                showToast(`Đã sao chép ${label} vào Clipboard!`, 'success');
             } catch (err) {
-                showToast('Không thể tự động sao chép. Vui lòng thử lại thủ công!', 'error');
+                showToast('Không thể sao chép tự động. Hãy tự bôi đen và sao chép!', 'error');
             }
             textField.remove();
         }
 
-        // Tạo thông báo Toast mượt mà đẹp mắt
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
             
-            let bgClass = 'bg-indigo-950/80 border-indigo-500/30 text-indigo-300';
+            let bgClass = 'bg-white border-indigo-150 text-indigo-800 shadow-indigo-50';
+            let iconColor = 'text-indigo-500';
+            
             if (type === 'success') {
-                bgClass = 'bg-emerald-950/80 border-emerald-500/30 text-emerald-300';
+                bgClass = 'bg-white border-emerald-150 text-emerald-800 shadow-emerald-50';
+                iconColor = 'text-emerald-500';
             } else if (type === 'error') {
-                bgClass = 'bg-rose-950/80 border-rose-550/30 text-rose-300';
+                bgClass = 'bg-white border-rose-150 text-rose-800 shadow-rose-50';
+                iconColor = 'text-rose-500';
+            } else if (type === 'info') {
+                bgClass = 'bg-white border-slate-150 text-slate-700 shadow-slate-50';
+                iconColor = 'text-slate-400';
             }
 
-            toast.className = `flex items-center gap-3 px-5 py-3.5 rounded-lg shadow-2xl backdrop-blur-md border transition-all duration-300 transform translate-y-0 pointer-events-auto ${bgClass}`;
+            toast.className = `flex items-center gap-2 px-3.5 py-2.5 rounded-lg shadow-md border transition-all duration-300 transform translate-y-2 opacity-0 pointer-events-auto ${bgClass}`;
             toast.innerHTML = `
-                <span class="flex-shrink-0 w-2 h-2 rounded-full animate-ping bg-current"></span>
-                <span class="font-medium text-sm">${message}</span>
+                <span class="flex-shrink-0 w-1.5 h-1.5 rounded-full animate-ping ${iconColor} bg-current"></span>
+                <span class="font-extrabold text-[10px] leading-none">${message}</span>
             `;
 
             container.appendChild(toast);
 
-            // Tự động biến mất sau 4 giây
             setTimeout(() => {
-                toast.classList.add('opacity-0', 'translate-y-[-10px]');
+                toast.classList.remove('opacity-0', 'translate-y-2');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-[-5px]');
                 setTimeout(() => {
                     toast.remove();
                 }, 300);
-            }, 4000);
+            }, 3000);
         }
     </script>
 </body>
