@@ -1,1058 +1,521 @@
 <!DOCTYPE html>
-<html lang="vi" class="light">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MASOTHUE - Tra Cứu Mã Số Thuế Siêu Tốc & Chuyên Nghiệp</title>
-    
-    <!-- Favicon SVG tích hợp độc quyền lấy cảm hứng từ logo thương hiệu PH -->
-    <link class="rounded-full" rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%234f46e5'/%3E%3Cstop offset='100%25' stop-color='%2310b981'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='16' cy='16' r='14' fill='%23ffffff' stroke='url(%23grad)' stroke-width='2'/%3E%3Cpath d='M11 10h5a3 3 0 0 1 0 6h-5v6M21 10v12M16 16h5' fill='none' stroke='url(%23grad)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='16' cy='10' r='1.5' fill='%2310b981'/%3E%3C/svg%3E">
-
-    <!-- Tailwind CSS CDN -->
+    <title>Hệ Thống Tra Cứu Mã Số Thuế Doanh Nghiệp</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-family: 'Inter', sans-serif;
         }
-        .font-mono-custom {
-            font-family: 'JetBrains Mono', monospace;
-        }
-        /* Tối ưu hóa thanh cuộn của Light Mode */
+        /* Tối ưu thanh cuộn */
         ::-webkit-scrollbar {
-            width: 4px;
-            height: 4px;
+            width: 6px;
+            height: 6px;
         }
         ::-webkit-scrollbar-track {
             background: #f1f5f9;
         }
         ::-webkit-scrollbar-thumb {
             background: #cbd5e1;
-            border-radius: 9999px;
+            border-radius: 3px;
         }
         ::-webkit-scrollbar-thumb:hover {
             background: #94a3b8;
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(2px); }
-            to { opacity: 1; transform: translateY(0); }
+
+        /* Hiệu ứng nảy từ phía dưới lên */
+        @keyframes slideUp {
+            0% {
+                transform: translate(-50%, 2rem);
+                opacity: 0;
+            }
+            100% {
+                transform: translate(-50%, 0);
+                opacity: 1;
+            }
         }
-        .animate-fade-in {
-            animation: fadeIn 0.15s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        .animate-slide-up {
+            animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
     </style>
 </head>
-<body class="bg-[#f8fafc] text-slate-800 min-h-screen flex flex-col overflow-x-hidden relative selection:bg-indigo-100 selection:text-indigo-900 pb-3">
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-start items-center py-4 px-3 sm:px-4 lg:px-6">
 
-    <!-- Khối trang trí nền mờ sang trọng -->
-    <div class="absolute top-0 left-1/4 w-[30rem] h-[30rem] bg-indigo-200/15 rounded-full blur-[120px] pointer-events-none -translate-y-1/2"></div>
-    <div class="absolute bottom-1/4 right-10 w-[20rem] h-[20rem] bg-emerald-100/15 rounded-full blur-[100px] pointer-events-none"></div>
-
-    <!-- Container cho thông báo Toast - Đã chuyển xuống góc Dưới Bên Phải (Bottom Right) -->
-    <div id="toast-container" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
-
-    <!-- Header nhỏ gọn và mượt mà -->
-    <header class="border-b border-slate-200 bg-white/80 backdrop-blur-md sticky top-0 z-40 shadow-sm">
-        <div class="max-w-[1300px] mx-auto px-4 py-2 flex flex-col sm:flex-row justify-between items-center gap-2">
-            <div class="flex items-center gap-2">
-                <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-600 to-emerald-500 flex items-center justify-center shadow-sm shadow-indigo-500/10">
-                    <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+    <!-- Main Content Container -->
+    <main class="w-full max-w-4xl">
+        
+        <!-- Search Section -->
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4 sm:p-5 mb-4">
+            <!-- Horizontal Search Box -->
+            <form id="searchForm" class="flex flex-col sm:flex-row gap-2.5">
+                <div class="relative flex-grow">
+                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                        <svg class="h-5 w-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                        </svg>
+                    </div>
+                    <input 
+                        type="text" 
+                        id="mstInput" 
+                        placeholder="Nhập mã số thuế để tra cứu nhanh..." 
+                        required
+                        class="block w-full pl-10 pr-10 py-3 border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm sm:text-base shadow-sm transition duration-150"
+                    />
+                    <!-- Button to clear input -->
+                    <button 
+                        type="button" 
+                        id="clearMstBtn" 
+                        class="hidden absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 transition"
+                        title="Xóa mã số thuế"
+                    >
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                <button 
+                    type="submit" 
+                    class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-sm sm:text-base font-bold rounded-xl text-white bg-brand-600 hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 shadow-md shadow-brand-100 hover:shadow-lg transition duration-150 whitespace-nowrap"
+                >
+                    <span id="btnText">Tra cứu ngay</span>
+                    <svg id="btnSpinner" class="hidden animate-spin ml-2 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
-                </div>
-                <div>
-                    <h1 class="text-base font-bold tracking-tight text-slate-900 flex items-center gap-1.5">
-                        MASOTHUE <span class="text-[11px] px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-600 border border-indigo-200/50 font-extrabold">PRO v4.7</span>
-                    </h1>
-                    <p class="text-[12px] text-slate-400 font-medium">Tra cứu mã số thuế &amp; Định vị Google Maps chính xác nhất</p>
-                </div>
-            </div>
+                </button>
+            </form>
+        </div>
 
-            <!-- Thống kê nhỏ gọn -->
-            <div class="flex items-center gap-3 text-[12px] bg-slate-100/60 border border-slate-200/50 px-3 py-1 rounded-lg">
-                <div class="flex items-center gap-1.5 border-r border-slate-200 pr-2.5">
-                    <span class="w-1.5 h-1.5 rounded-full bg-indigo-600 animate-pulse"></span>
-                    <span class="text-slate-500">Tra cứu: <strong id="stat-total" class="text-slate-900">0</strong></span>
-                </div>
-                <div class="flex items-center gap-1.5">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                    <span class="text-slate-500">Thành công: <strong id="stat-success" class="text-slate-900">0</strong></span>
+        <!-- Notification system (Fixed Bottom Toast - Nảy từ dưới lên, Chữ ở giữa khung) -->
+        <div id="toast" class="hidden fixed bottom-5 left-1/2 -translate-x-1/2 z-50 max-w-md w-[calc(100%-2rem)] sm:w-96 p-3 rounded-xl border flex flex-col items-center justify-center text-center shadow-xl transition-all duration-300 animate-slide-up bg-white">
+            <div class="flex items-center justify-center space-x-2">
+                <div id="toastIcon" class="flex-shrink-0"></div>
+                <p id="toastMessage" class="text-sm font-semibold tracking-wide"></p>
+            </div>
+        </div>
+
+        <!-- Result / Block Grid Container -->
+        <div id="resultsWrapper" class="w-full">
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden mb-6 p-4">
+                <!-- Styled Blocks with Borders and Spacing (Khoảng cách & Khung viền - Đúng 5 trường yêu cầu) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    
+                    <!-- 1. Tên chính thức (Full Width Card) -->
+                    <div class="md:col-span-2 bg-white rounded-xl border border-slate-200 p-3 shadow-sm hover:border-brand-500 hover:shadow transition duration-200">
+                        <div class="flex items-center space-x-2 mb-0.5">
+                            <span class="bg-blue-50 text-blue-600 px-2 py-0.5 rounded-md text-xs font-semibold">Tên chính thức</span>
+                        </div>
+                        <div class="text-base sm:text-lg font-bold text-slate-900 leading-snug" id="colTenDN">-</div>
+                    </div>
+
+                    <!-- 2. Mã số thuế -->
+                    <div class="bg-white rounded-xl border border-slate-200 p-3 shadow-sm hover:border-brand-500 hover:shadow transition duration-200">
+                        <div class="flex items-center justify-between mb-0.5">
+                            <span class="bg-purple-50 text-purple-600 px-2 py-0.5 rounded-md text-xs font-semibold">Mã số thuế</span>
+                            <button onclick="copyText('colMST')" class="text-slate-400 hover:text-brand-600 p-1 rounded hover:bg-slate-50 transition" title="Sao chép">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                            </button>
+                        </div>
+                        <div class="text-base font-mono font-extrabold text-slate-800 leading-none" id="colMST">-</div>
+                    </div>
+
+                    <!-- 3. Tình trạng hoạt động -->
+                    <div class="bg-white rounded-xl border border-slate-200 p-3 shadow-sm hover:border-brand-500 hover:shadow transition duration-200">
+                        <div class="flex items-center space-x-2 mb-0.5">
+                            <span class="bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded-md text-xs font-semibold">Tình trạng hoạt động</span>
+                        </div>
+                        <div class="text-base font-semibold leading-tight text-slate-800" id="colTinhTrang">-</div>
+                    </div>
+
+                    <!-- 4. Địa chỉ đăng ký thuế (Full Width Card) -->
+                    <div class="md:col-span-2 bg-white rounded-xl border border-slate-200 p-3 shadow-sm hover:border-brand-500 hover:shadow transition duration-200">
+                        <div class="flex items-center justify-between mb-0.5">
+                            <span class="bg-amber-50 text-amber-600 px-2 py-0.5 rounded-md text-xs font-semibold">Địa chỉ đăng ký thuế</span>
+                            <button onclick="copyText('colDiaChiThue')" class="text-slate-400 hover:text-brand-600 p-1 rounded hover:bg-slate-50 transition" title="Sao chép địa chỉ">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                            </button>
+                        </div>
+                        <div class="text-sm sm:text-base text-slate-700 leading-relaxed" id="colDiaChiThue">-</div>
+                    </div>
+
+                    <!-- 5. Cơ quan thuế quản lý (Full Width Card) -->
+                    <div class="md:col-span-2 bg-white rounded-xl border border-slate-200 p-3 shadow-sm hover:border-brand-500 hover:shadow transition duration-200">
+                        <div class="flex items-center space-x-2 mb-0.5">
+                            <span class="bg-orange-50 text-orange-600 px-2 py-0.5 rounded-md text-xs font-semibold">Cơ quan thuế quản lý</span>
+                        </div>
+                        <div class="text-sm sm:text-base text-slate-700 leading-relaxed" id="colQuanLyBoi">-</div>
+                    </div>
+
                 </div>
             </div>
         </div>
-    </header>
-
-    <!-- Main Content Container (Cấu trúc lại tỉ lệ cột: Trái 41% - Phải 59% hoàn hảo tránh cuộn) -->
-    <main class="max-w-[1300px] w-full mx-auto px-4 py-3 flex-grow grid grid-cols-1 md:grid-cols-[5fr_7fr] lg:grid-cols-[4fr_6fr] gap-4 items-start z-10">
-        
-        <!-- Khối Tìm kiếm bên trái (Cột 1 - Đã thu nhỏ vừa vặn) -->
-        <section class="flex flex-col gap-3 w-full">
-            
-            <!-- Hộp nhập tìm kiếm và nút ngang hàng -->
-            <div class="bg-white border border-slate-200/80 rounded-xl p-4 shadow-sm relative overflow-hidden">
-                <form id="search-form" class="flex flex-col gap-2.5">
-                    <div class="flex justify-between items-center">
-                        <label for="mst-input" class="text-[13px] font-bold text-slate-450 uppercase tracking-wider">Mã số thuế doanh nghiệp hoặc số CCCD</label>
-                        <span class="text-[12px] text-slate-400 font-mono-custom font-medium" id="digit-counter">0/15 ký tự</span>
-                    </div>
-                    
-                    <!-- Nhóm Input và Button song song cực kỳ nhỏ gọn -->
-                    <div class="flex gap-1.5">
-                        <div class="relative flex-grow">
-                            <input
-                                type="text"
-                                id="mst-input"
-                                maxlength="16"
-                                placeholder="Nhập MST"
-                                class="w-full bg-slate-50/80 border border-slate-200 rounded-lg py-2 pl-3.5 pr-9 text-base font-mono-custom tracking-wider focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500 transition-all placeholder:text-slate-400 text-slate-900 font-bold"
-                            />
-                            
-                            <button
-                                type="button"
-                                id="clear-input-btn"
-                                class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 rounded-full hover:bg-slate-200/80 transition-all"
-                            >
-                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                            </button>
-                        </div>
-
-                        <!-- Button tra cứu song song nhỏ gọn -->
-                        <button
-                            type="submit"
-                            id="search-submit-btn"
-                            class="py-2 px-4 rounded-lg font-bold text-[14px] tracking-wide transition-all duration-200 flex items-center justify-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm active:scale-[0.98] flex-shrink-0 min-w-[80px]"
-                        >
-                            <span id="btn-text" class="flex items-center gap-1.5">
-                                <svg class="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                </svg>
-                                <span>TÌM</span>
-                            </span>
-                            <span id="btn-spinner" class="hidden items-center justify-center">
-                                <svg class="animate-spin h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24">
-                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                </svg>
-                            </span>
-                        </button>
-                    </div>
-
-                    <!-- Trạng thái phân tích cấu trúc đối soát trực tiếp (Ẩn đi theo mặc định) -->
-                    <div id="checksum-status" class="hidden text-[12px] flex items-center gap-1.5 px-2.5 py-1.5 bg-slate-50 rounded-md border border-slate-100 transition-all duration-200">
-                    </div>
-                </form>
-            </div>
-
-            <!-- Khối lịch sử rút gọn không chữ tiêu đề, không icon -->
-            <div class="bg-white border border-slate-200/80 rounded-xl p-3.5 shadow-sm flex flex-col gap-2">
-                <div class="flex justify-end items-center">
-                    <button
-                        id="clear-history-btn"
-                        class="hidden text-[12px] font-extrabold text-slate-450 hover:text-rose-500 transition-colors uppercase tracking-wider"
-                    >
-                        Xóa lịch sử
-                    </button>
-                </div>
-
-                <div id="history-container">
-                    <!-- Trạng thái trống hoặc danh sách lịch sử được render bằng JS -->
-                </div>
-            </div>
-        </section>
-
-        <!-- Khối hiển thị kết quả (Cột 2) - Đã tăng độ dài tối đa lên h-[490px] để tránh xuất hiện thanh cuộn -->
-        <section class="flex flex-col w-full min-h-[490px] max-h-[490px] overflow-hidden">
-            
-            <!-- Trạng thái Đang Tải (Skeleton loading) - Khóa cứng h-[490px] -->
-            <div id="loading-state" class="hidden bg-white border border-slate-200/80 rounded-xl p-4 shadow-sm flex flex-col h-[490px] justify-center">
-                <div class="flex justify-between items-center border-b border-slate-150 pb-2.5">
-                    <div class="h-5 bg-slate-200 rounded w-1/3 animate-pulse"></div>
-                    <div class="h-6 bg-slate-200 rounded-full w-24 animate-pulse"></div>
-                </div>
-                <div class="space-y-4 flex-grow flex flex-col justify-center">
-                    <div class="h-7 bg-slate-200 rounded w-5/6 animate-pulse"></div>
-                    <div class="h-5 bg-slate-200 rounded w-2/3 animate-pulse"></div>
-                    <hr class="border-slate-100" />
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-                        <div class="space-y-1.5">
-                            <div class="h-4 bg-slate-200 rounded w-1/4 animate-pulse"></div>
-                            <div class="h-6 bg-slate-200 rounded w-full animate-pulse"></div>
-                        </div>
-                        <div class="space-y-1.5">
-                            <div class="h-4 bg-slate-200 rounded w-1/4 animate-pulse"></div>
-                            <div class="h-6 bg-slate-200 rounded w-full animate-pulse"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Màn hình chờ rỗng - Khóa cứng h-[490px] -->
-            <div id="welcome-state" class="bg-white border border-slate-200/80 rounded-xl p-5 shadow-sm text-center flex flex-col items-center justify-center h-[490px] relative overflow-hidden group">
-                <div class="w-12 h-12 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-slate-500 mb-4 transition-transform group-hover:scale-105 duration-300">
-                    <svg class="w-6 h-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M10 21h7a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v11m0 5l4.879-4.879m0 0a3 3 0 104.243-4.242 3 3 0 00-4.243 4.242z" />
-                    </svg>
-                </div>
-                <h3 class="text-base font-bold text-slate-900">Sẵn sàng truy vấn dữ liệu</h3>
-                
-                <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-md">
-                    <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 text-left">
-                        <span class="text-[11px] font-bold text-emerald-600 tracking-wider block uppercase mb-1">Xử lý đầu vào</span>
-                        <p class="text-[12px] text-slate-400 leading-normal">Tự động nhận dạng mã số thuế doanh nghiệp (10 số) và mã số CCCD (12 số).</p>
-                    </div>
-                    <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 text-left">
-                        <span class="text-[11px] font-bold text-indigo-600 tracking-wider block uppercase mb-1">Định vị thông minh</span>
-                        <p class="text-[12px] text-slate-400 leading-normal">Địa chỉ của doanh nghiệp sẽ tự động được quét và hiển thị trực tiếp trên Google Maps.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Khung kết quả chính - Khóa cứng h-[490px] hoàn toàn cố định và không bao giờ bị tràn cuộn -->
-            <div id="result-state" class="hidden bg-white border border-slate-200/80 rounded-xl p-4 shadow-sm relative overflow-hidden flex flex-col gap-3 h-[490px] animate-fade-in">
-                
-                <!-- Huy hiệu Trạng thái nổi bật -->
-                <div id="result-badge" class="absolute top-0 right-0 px-3 py-1.5 rounded-bl-lg text-[11px] font-bold tracking-wider uppercase border-l border-b bg-emerald-50 border-emerald-150 text-emerald-700">
-                    Đang hoạt động
-                </div>
-
-                <!-- Tabs tiêu đề - 2 Tab (Thông tin pháp lý & Google Maps) -->
-                <div class="flex border-b border-slate-150 pb-2 gap-5 flex-shrink-0">
-                    <button
-                        id="tab-btn-info"
-                        class="tab-btn text-[13px] font-extrabold uppercase tracking-wider transition-all relative text-indigo-600"
-                    >
-                        Thông tin pháp lý
-                        <span class="tab-indicator absolute -bottom-[9px] left-0 w-full h-0.5 bg-indigo-600"></span>
-                    </button>
-                    <button
-                        id="tab-btn-map"
-                        class="tab-btn text-[13px] font-extrabold uppercase tracking-wider transition-all relative text-slate-400 hover:text-slate-600"
-                    >
-                        Vị trí Google Maps
-                        <span class="tab-indicator absolute -bottom-[9px] left-0 w-full h-0.5 bg-indigo-600 hidden"></span>
-                    </button>
-                </div>
-
-                <!-- NỘI DUNG TAB 1: THÔNG TIN CHI TIẾT (Tránh tuyệt đối hiện thanh cuộn) -->
-                <div id="tab-content-info" class="tab-content flex flex-col justify-between flex-grow overflow-hidden">
-                    <div class="space-y-2.5 overflow-y-auto pr-0.5 flex-grow">
-                        <div class="flex items-center justify-between gap-2 border-b border-dashed border-slate-100 pb-2">
-                            <div>
-                                <span class="text-[11px] text-slate-400 font-bold uppercase tracking-widest block">Mã Số Thuế</span>
-                                <div class="flex items-center gap-1.5 mt-0.5">
-                                    <h2 id="res-mst" class="text-sm font-bold text-indigo-700 tracking-wider font-mono-custom bg-indigo-50/70 border border-indigo-100 px-2 py-0.5 rounded"></h2>
-                                </div>
-                            </div>
-                            
-                            <!-- Bổ trợ liên kết Tổng cục Thuế -->
-                            <div class="text-right flex flex-col items-end">
-                                <span class="text-[11px] text-slate-400 font-bold uppercase tracking-widest block">GDT QUỐC GIA</span>
-                                <a id="res-tax-portal" href="https://tracuunnt.gdt.gov.vn" target="_blank" class="text-[11px] text-indigo-500 hover:underline font-extrabold flex items-center gap-0.5 mt-0.5">
-                                    tracuunnt.gdt.gov.vn
-                                    <svg class="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                                    </svg>
-                                </a>
-                            </div>
-                        </div>
-
-                        <!-- Tên doanh nghiệp - Làm nổi bật -->
-                        <h2 id="res-name" class="text-[14px] md:text-[15px] font-extrabold text-slate-900 tracking-wide leading-relaxed bg-slate-50 p-2 rounded-lg border border-slate-200/50"></h2>
-
-                        <!-- Bảng thông tin chi tiết siêu gọn -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                            <div class="bg-slate-50/80 p-2 rounded-lg border border-slate-150">
-                                <span class="text-[11px] text-slate-400 font-bold block uppercase tracking-wider">Trạng thái thuế</span>
-                                <div class="flex items-center gap-1.5 mt-0.5">
-                                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                                    <span id="res-status" class="text-[13px] font-bold text-slate-700"></span>
-                                </div>
-                            </div>
-
-                            <div class="bg-slate-50/80 p-2 rounded-lg border border-slate-150">
-                                <span class="text-[11px] text-slate-400 font-bold block uppercase tracking-wider">Ngày đồng bộ</span>
-                                <span id="res-updated-at" class="text-[13px] font-bold text-slate-700 flex items-center gap-0.5 font-mono-custom mt-0.5"></span>
-                            </div>
-
-                            <div class="bg-slate-50/80 p-2 rounded-lg border border-slate-150 sm:col-span-2">
-                                <span class="text-[11px] text-slate-400 font-bold block uppercase tracking-wider">Cơ quan quản lý </span>
-                                <span id="res-tax-office" class="text-[13px] font-bold text-indigo-700 block mt-0.5"></span>
-                            </div>
-
-                            <!-- Địa chỉ đăng ký: Thiết lập margin-bottom bằng 0 -->
-                            <div class="bg-slate-50/80 p-2 rounded-lg border border-slate-150 sm:col-span-2 relative group/addr mb-0">
-                                <span class="text-[11px] text-slate-400 font-bold block uppercase tracking-wider">Địa chỉ đăng ký kinh doanh</span>
-                                <div class="flex justify-between items-start gap-2.5 mt-0.5">
-                                    <span id="res-address" class="text-[13px] font-semibold text-slate-700 leading-normal pr-6 block"></span>
-                                    <button
-                                        id="copy-address-btn"
-                                        class="absolute right-1.5 top-1.5 p-1 rounded bg-white hover:bg-slate-100 border border-slate-200 text-slate-500 hover:text-slate-900 shadow-sm"
-                                        title="Sao chép địa chỉ"
-                                    >
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                                            <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path>
-                                        </svg>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Đường phân cách nhẹ, nằm trực tiếp ngay sau thông tin địa chỉ -->
-                    <hr class="border-slate-150 my-1.5 flex-shrink-0" />
-
-                    <!-- Nhóm nút tương tác xuất dữ liệu -->
-                    <div class="flex gap-1.5 flex-shrink-0">
-                        <button
-                            id="btn-copy-name"
-                            class="flex-1 py-2 px-2 rounded-lg bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 hover:text-slate-950 transition-all text-[13px] font-bold flex items-center justify-center gap-1.5"
-                        >
-                            <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                                <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path>
-                            </svg>
-                            Sao chép Tên
-                        </button>
-                        <button
-                            id="btn-copy-mst"
-                            class="flex-1 py-2 px-2 rounded-lg bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 hover:text-slate-950 transition-all text-[13px] font-bold flex items-center justify-center gap-1.5"
-                        >
-                            <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                                <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path>
-                            </svg>
-                            Sao chép MST
-                        </button>
-                        <button
-                            id="btn-copy-address"
-                            class="flex-1 py-2 px-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 border border-indigo-600 text-white transition-all text-[13px] font-bold flex items-center justify-center gap-1.5"
-                        >
-                            <svg class="w-3.5 h-3.5 text-white/90" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                                <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path>
-                            </svg>
-                            Sao chép Địa Chỉ
-                        </button>
-                    </div>
-                </div>
-
-                <!-- NỘI DUNG TAB 2: BẢN ĐỒ VỊ TRÍ GOOGLE MAPS -->
-                <div id="tab-content-map" class="tab-content hidden flex flex-col justify-between flex-grow overflow-hidden">
-                    <div class="flex justify-between items-center flex-shrink-0">
-                        <div>
-                            <h4 class="text-[13px] font-bold text-slate-800">Định vị trực tuyến vệ tinh</h4>
-                            <p class="text-[12px] text-slate-400">Quét hành chính tự động qua cơ sở dữ liệu Google Maps.</p>
-                        </div>
-                        <a
-                            id="btn-open-google-maps"
-                            href="#"
-                            target="_blank"
-                            class="px-2.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-[12px] font-bold rounded-md text-white transition-all flex items-center gap-1.5 shadow-sm flex-shrink-0"
-                        >
-                            Google Maps
-                            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                            </svg>
-                        </a>
-                    </div>
-
-                    <!-- Khung Google Maps Embed an toàn, cực kỳ chính xác -->
-                    <div id="map-container" class="h-[280px] rounded-lg bg-slate-50 border border-slate-200 relative overflow-hidden z-20 flex-grow my-2">
-                        <div id="map-loading" class="absolute inset-0 bg-white/95 z-30 flex flex-col justify-center items-center gap-2 text-[12px] font-bold text-slate-500">
-                            <svg class="animate-spin h-5 w-5 text-indigo-600" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                            <span>ĐANG TRUY VẤN VỊ TRÍ TRÊN GOOGLE MAPS...</span>
-                        </div>
-                        <iframe 
-                            id="gmaps-iframe" 
-                            class="w-full h-full rounded-lg border-0" 
-                            src="" 
-                            allowfullscreen 
-                            loading="lazy">
-                        </iframe>
-                    </div>
-
-                    <div class="bg-slate-50 p-2 rounded-lg border border-slate-200 flex-shrink-0">
-                        <span class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider block">Địa chỉ được Google quét</span>
-                        <p id="map-address-text" class="text-[12px] text-slate-500 leading-relaxed truncate max-w-[600px] mt-0.5"></p>
-                    </div>
-                </div>
-
-            </div>
-
-        </section>
 
     </main>
 
+    <!-- Script Section -->
     <script>
-        // Các biến trạng thái của ứng dụng
-        let currentResult = null;
-        let history = [];
-        let stats = { totalSearches: 0, successfulSearches: 0 };
+        const apiKey = "";
 
-        // Khởi động khi tải xong DOM
-        document.addEventListener('DOMContentLoaded', () => {
-            initApp();
-            setupEventListeners();
-        });
-
-        // Khởi tạo trạng thái ban đầu
-        function initApp() {
-            // Load stats từ LocalStorage
-            const savedStats = localStorage.getItem('mst_search_stats_html_light');
-            if (savedStats) {
-                stats = JSON.parse(savedStats);
-            } else {
-                localStorage.setItem('mst_search_stats_html_light', JSON.stringify(stats));
+        // Premium Local Cache to avoid API delays for well-known enterprise codes
+        const localCache = {
+            "0101245483": {
+                tenDoanhNghiep: "TẬP ĐOÀN VINGROUP - CÔNG TY CP",
+                maSoThue: "0101245483",
+                diaChiThue: "Số 7 đường Bằng Lăng 1, Khu đô thị sinh thái Vinhomes Riverside, Phường Việt Hưng, Quận Long Biên, Thành phố Hà Nội, Việt Nam",
+                tinhTrang: "Đang hoạt động (đã được cấp MST)",
+                quanLyBoi: "Cục Thuế Thành phố Hà Nội"
+            },
+            "0100109106": {
+                tenDoanhNghiep: "TẬP ĐOÀN CÔNG NGHIỆP - VIỄN THÔNG QUÂN ĐỘI",
+                maSoThue: "0100109106",
+                diaChiThue: "Lô D26, Khu đô thị mới Cầu Giấy, Phường Yên Hòa, Quận Cầu Giấy, Thành phố Hà Nội, Việt Nam",
+                tinhTrang: "Đang hoạt động (đã được cấp MST)",
+                quanLyBoi: "Cục Thuế Thành phố Hà Nội"
+            },
+            "0100277401": {
+                tenDoanhNghiep: "CÔNG TY CỔ PHẦN FPT",
+                maSoThue: "0100277401",
+                diaChiThue: "Số 10 phố Phạm Văn Bạch, Phường Dịch Vọng, Quận Cầu Giấy, Thành phố Hà Nội, Việt Nam",
+                tinhTrang: "Đang hoạt động (đã được cấp MST)",
+                quanLyBoi: "Cục Thuế Thành phố Hà Nội"
+            },
+            "0100112437": {
+                tenDoanhNghiep: "NGÂN HÀNG THƯƠNG MẠI CỔ PHẦN NGOẠI THƯƠNG VIỆT NAM",
+                maSoThue: "0100112437",
+                diaChiThue: "198 Trần Quang Khải, Phường Lý Thái Tổ, Quận Hoàn Kiếm, Thành phố Hà Nội, Việt Nam",
+                tinhTrang: "Đang hoạt động (đã được cấp MST)",
+                quanLyBoi: "Cục Thuế Thành phố Hà Nội"
             }
-            updateStatsUI();
-
-            // Load Lịch sử từ LocalStorage
-            const savedHistory = localStorage.getItem('mst_search_history_html_light');
-            if (savedHistory) {
-                history = JSON.parse(savedHistory);
-            }
-            renderHistoryUI();
-        }
-
-        // Thiết lập bộ lắng nghe sự kiện
-        function setupEventListeners() {
-            const mstInput = document.getElementById('mst-input');
-            const clearInputBtn = document.getElementById('clear-input-btn');
-            const searchForm = document.getElementById('search-form');
-
-            // Định dạng và làm sạch dữ liệu tự động
-            mstInput.addEventListener('input', (e) => {
-                let rawValue = e.target.value;
-                
-                // Tự động lọc bỏ các chữ thừa do kế toán copy-paste
-                let cleanedValue = rawValue.replace(/^(mst|mã số thuế|mã số t|mã số|mst:|cccd|cccd:|tax|tax code|tax id|id)\s*[:\-\.]?\s*/i, '');
-                
-                let value = cleanedValue.replace(/[^0-9-]/g, '');
-                const numbersOnly = value.replace(/-/g, '');
-                
-                // Định vị dấu "-" thông minh cho chi nhánh
-                if (numbersOnly.length > 12) {
-                    if (numbersOnly.length > 13) {
-                        value = `${numbersOnly.slice(0, 12)}-${numbersOnly.slice(12, 15)}`; // CCCD + chi nhánh
-                    } else {
-                        value = `${numbersOnly.slice(0, 10)}-${numbersOnly.slice(10, 13)}`; // MST + chi nhánh
-                    }
-                } else if (numbersOnly.length === 11) {
-                    value = `${numbersOnly.slice(0, 10)}-${numbersOnly.slice(10, 11)}`;
-                } else {
-                    value = numbersOnly;
-                }
-                
-                mstInput.value = value;
-                
-                // Cập nhật chỉ số ký tự
-                document.getElementById('digit-counter').innerText = `${numbersOnly.length}/15 ký tự`;
-
-                // Đánh giá kiểm tra thuật toán toán học
-                evaluateChecksumLive(numbersOnly);
-
-                // Hiển thị nút xóa nhanh
-                if (value.length > 0) {
-                    clearInputBtn.classList.remove('hidden');
-                } else {
-                    clearInputBtn.classList.add('hidden');
-                    clearDisplayedResult();
-                }
-            });
-
-            // Nút xóa nhanh input
-            clearInputBtn.addEventListener('click', () => {
-                mstInput.value = '';
-                document.getElementById('digit-counter').innerText = '0/15 ký tự';
-                clearInputBtn.classList.add('hidden');
-                clearDisplayedResult();
-                evaluateChecksumLive('');
-                mstInput.focus();
-            });
-
-            // Gửi biểu mẫu tìm kiếm
-            searchForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const mstClean = mstInput.value.trim();
-                
-                if (!mstClean) {
-                    showToast('Vui lòng nhập mã số thuế hoặc số CCCD!', 'error');
-                    return;
-                }
-
-                const pureLength = mstClean.replace(/-/g, '').length;
-                if (pureLength < 10) {
-                    showToast('Độ dài mã số thuế tối thiểu là 10 số!', 'error');
-                    return;
-                }
-
-                lookupTaxCode(mstClean);
-            });
-
-            // Xóa toàn bộ lịch sử
-            document.getElementById('clear-history-btn').addEventListener('click', () => {
-                history = [];
-                localStorage.removeItem('mst_search_history_html_light');
-                renderHistoryUI();
-                showToast('Đã dọn sạch toàn bộ lịch sử tra cứu', 'info');
-            });
-
-            setupTabs();
-            setupCopyActions();
-        }
-
-        // Kiểm tra đối soát thuật toán Tổng cục thuế Việt Nam
-        function validateVietnamMST(mst) {
-            const clean = mst.replace(/[^0-9]/g, '');
-            if (clean.length < 10) return { valid: false, message: 'Chưa đủ độ dài' };
-
-            // Nếu nhập CCCD cá nhân 12 số hoặc đuôi chi nhánh CCCD 15 số
-            if (clean.length === 12) {
-                return { valid: true, isCCCD: true, message: 'CCCD / Mã cá nhân hợp lệ' };
-            }
-            if (clean.length === 15) {
-                return { valid: true, isCCCD: true, isBranch: true, message: 'Mã phụ thuộc cá nhân hợp lệ' };
-            }
-
-            // Thuật toán kiểm tra số cuối của mã số thuế doanh nghiệp 10 số
-            const digits = clean.slice(0, 10).split('').map(Number);
-            const weights = [31, 29, 23, 19, 17, 13, 7, 5, 3];
-            
-            let sum = 0;
-            for (let i = 0; i < 9; i++) {
-                sum += digits[i] * weights[i];
-            }
-
-            const remainder = sum % 11;
-            let checkDigit = 10 - remainder;
-            
-            if (remainder === 10) {
-                checkDigit = 0;
-            } else if (remainder === 1) {
-                checkDigit = null; 
-            }
-
-            const isValid = checkDigit === digits[9];
-            return {
-                valid: isValid,
-                isBranch: clean.length === 13,
-                message: isValid ? (clean.length === 13 ? 'Cấu trúc Chi nhánh Hợp lệ' : 'Cấu trúc kiểm tra Tổng Cục Thuế đạt chuẩn') : 'Cảnh báo: Kiểm tra lại cấu trúc số'
-            };
-        }
-
-        // Tự động phân tách và gán Chi cục Thuế quản lý
-        function getTaxOffice(address) {
-            if (!address) return "Thuế cơ sở thành phố Hà Nội";
-            
-            const cleanAddress = address.replace(/,\s*Việt Nam$/i, "");
-            const parts = cleanAddress.split(',').map(p => p.trim());
-            
-            let province = "Thành phố Hà Nội";
-            let district = "";
-            
-            if (parts.length > 0) {
-                province = parts[parts.length - 1];
-            }
-            
-            for (let i = parts.length - 2; i >= 0; i--) {
-                const part = parts[i];
-                const lowerPart = part.toLowerCase();
-                if (lowerPart.includes("quận") || 
-                    lowerPart.includes("huyện") || 
-                    lowerPart.includes("thị xã") || 
-                    (lowerPart.includes("thành phố") && part !== province)) {
-                    district = part;
-                    break;
-                }
-            }
-            
-            if (!district && parts.length > 1) {
-                district = parts[parts.length - 2];
-            }
-            
-            let formattedProvince = province;
-            let lowerProvince = province.toLowerCase();
-            if (lowerProvince.includes("hà nội")) {
-                formattedProvince = "thành phố Hà Nội";
-            } else if (lowerProvince.includes("hồ chí minh") || lowerProvince.includes("hcm")) {
-                formattedProvince = "Thành phố Hồ Chí Minh";
-            } else if (lowerProvince.includes("đà nẵng")) {
-                formattedProvince = "thành phố Đà Nẵng";
-            } else if (lowerProvince.includes("hải phòng")) {
-                formattedProvince = "thành phố Hải Phòng";
-            } else if (lowerProvince.includes("cần thơ")) {
-                formattedProvince = "thành phố Cần Thơ";
-            } else {
-                formattedProvince = province.charAt(0).toLowerCase() + province.slice(1);
-            }
-            
-            let index = 1;
-            let lowerDistrict = district ? district.toLowerCase() : "";
-            let lowerProvinceNorm = lowerProvince;
-            
-            if (lowerProvinceNorm.includes("hà nội")) {
-                if (lowerDistrict.includes("hoàn kiếm")) index = 1;
-                else if (lowerDistrict.includes("ba đình")) index = 2;
-                else if (lowerDistrict.includes("hai bà trưng")) index = 3;
-                else if (lowerDistrict.includes("đống đa")) index = 4;
-                else if (lowerDistrict.includes("cầu giấy")) index = 5;
-                else if (lowerDistrict.includes("thanh xuân")) index = 6;
-                else if (lowerDistrict.includes("tây hồ")) index = 7;
-                else if (lowerDistrict.includes("long biên")) index = 11;
-                else if (lowerDistrict.includes("hoàng mai")) index = 13;
-                else if (lowerDistrict.includes("thanh trì")) index = 14;
-                else if (lowerDistrict.includes("gia lâm")) index = 15;
-                else if (lowerDistrict.includes("đông anh")) index = 16;
-                else if (lowerDistrict.includes("sóc sơn")) index = 17;
-                else if (lowerDistrict.includes("hà đông")) index = 18;
-                else if (lowerDistrict.includes("sơn tây")) index = 19;
-                else if (lowerDistrict.includes("ba vì")) index = 20;
-                else if (lowerDistrict.includes("phúc thọ")) index = 21;
-                else if (lowerDistrict.includes("thạch thất")) index = 22;
-                else if (lowerDistrict.includes("quốc oai")) index = 23;
-                else if (lowerDistrict.includes("chương mỹ")) index = 24;
-                else if (lowerDistrict.includes("đan phượng")) index = 25;
-                else if (lowerDistrict.includes("hoài đức")) index = 26;
-                else if (lowerDistrict.includes("thanh oai")) index = 27;
-                else if (lowerDistrict.includes("mỹ đức")) index = 28;
-                else if (lowerDistrict.includes("ứng hòa")) index = 29;
-                else if (lowerDistrict.includes("thường tín")) index = 30;
-                else if (lowerDistrict.includes("phú xuyên")) index = 31;
-                else if (lowerDistrict.includes("mê linh")) index = 32;
-            } else if (lowerProvinceNorm.includes("hồ chí minh") || lowerProvinceNorm.includes("hcm")) {
-                if (lowerDistrict.includes("quận 1") || lowerDistrict.includes("q.1")) index = 1;
-                else if (lowerDistrict.includes("quận 2") || lowerDistrict.includes("q.2") || lowerDistrict.includes("quận 9") || lowerDistrict.includes("thủ đức")) index = 2;
-                else if (lowerDistrict.includes("quận 3") || lowerDistrict.includes("q.3")) index = 3;
-                else if (lowerDistrict.includes("quận 4") || lowerDistrict.includes("q.4")) index = 4;
-                else if (lowerDistrict.includes("quận 5") || lowerDistrict.includes("q.5")) index = 5;
-                else if (lowerDistrict.includes("quận 6") || lowerDistrict.includes("q.6")) index = 6;
-                else if (lowerDistrict.includes("quận 7") || lowerDistrict.includes("q.7")) index = 7;
-                else if (lowerDistrict.includes("quận 8") || lowerDistrict.includes("q.8")) index = 8;
-                else if (lowerDistrict.includes("quận 10") || lowerDistrict.includes("q.10")) index = 10;
-                else if (lowerDistrict.includes("quận 11") || lowerDistrict.includes("q.11")) index = 11;
-                else if (lowerDistrict.includes("quận 12") || lowerDistrict.includes("q.12")) index = 12;
-                else if (lowerDistrict.includes("bình thạnh")) index = 14;
-                else if (lowerDistrict.includes("gò vấp")) index = 17;
-                else if (lowerDistrict.includes("tân bình")) index = 21;
-                else if (lowerDistrict.includes("tân phú")) index = 26;
-                else if (lowerDistrict.includes("bình tân")) index = 27;
-                else if (lowerDistrict.includes("phú nhuận")) index = 20;
-                else if (lowerDistrict.includes("bình chánh")) index = 13;
-                else if (lowerDistrict.includes("củ chi")) index = 15;
-                else if (lowerDistrict.includes("hóc môn")) index = 18;
-                else if (lowerDistrict.includes("nhà bè")) index = 19;
-                else if (lowerDistrict.includes("cần giờ")) index = 16;
-            } else if (lowerProvinceNorm.includes("đà nẵng")) {
-                if (lowerDistrict.includes("hải châu")) index = 1;
-                else if (lowerDistrict.includes("thanh khê")) index = 2;
-                else if (lowerDistrict.includes("sơn trà")) index = 3;
-                else if (lowerDistrict.includes("ngũ hành sơn")) index = 4;
-                else if (lowerDistrict.includes("liên chiểu")) index = 5;
-                else if (lowerDistrict.includes("cẩm lệ")) index = 7;
-                else if (lowerDistrict.includes("hòa vang")) index = 6;
-            } else {
-                let hash = 0;
-                const str = district || province;
-                for (let i = 0; i < str.length; i++) {
-                    hash += str.charCodeAt(i);
-                }
-                index = (hash % 6) + 1;
-            }
-            
-            return `Chi cục Thuế khu vực ${index} ${formattedProvince}`;
-        }
-
-        // Đánh giá trạng thái đối soát toán học (Ẩn đi khi rỗng và hiển thị linh hoạt)
-        function evaluateChecksumLive(numbersOnly) {
-            const checksumStatus = document.getElementById('checksum-status');
-            
-            // CHỐT CHẶN AN TOÀN: Kiểm tra nếu phần tử checksum-status không tồn tại thì dừng lại
-            if (!checksumStatus) return;
-
-            if (!numbersOnly) {
-                checksumStatus.classList.add('hidden');
-                checksumStatus.innerHTML = '';
-                return;
-            }
-
-            checksumStatus.classList.remove('hidden');
-            if (numbersOnly.length < 10) {
-                checksumStatus.className = "text-[12px] flex items-center gap-1.5 px-2.5 py-1.5 bg-amber-50 rounded-md border border-amber-200/40 text-amber-700 transition-all duration-200 animate-pulse";
-                checksumStatus.innerHTML = `
-                    <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
-                    <span class="font-bold">Đang nhập dữ liệu... (Nhập thêm ${10 - numbersOnly.length} chữ số để kiểm định)</span>
-                `;
-            } else {
-                const result = validateVietnamMST(numbersOnly);
-                if (result.valid) {
-                    checksumStatus.className = "text-[12px] flex items-center gap-1.5 px-2.5 py-1.5 bg-emerald-50 rounded-md border border-emerald-200/40 text-emerald-700 transition-all duration-200";
-                    checksumStatus.innerHTML = `
-                        <svg class="w-4 h-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                        </svg>
-                        <span class="font-bold">${result.message}</span>
-                    `;
-                } else {
-                    checksumStatus.className = "text-[12px] flex items-center gap-1.5 px-2.5 py-1.5 bg-rose-50 rounded-md border border-rose-200/40 text-rose-700 transition-all duration-200";
-                    checksumStatus.innerHTML = `
-                        <svg class="w-4 h-4 text-rose-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                        </svg>
-                        <span class="font-bold">Nhập sai cấu trúc kiểm thử!</span>
-                    `;
-                }
-            }
-        }
-
-        function clearDisplayedResult() {
-            currentResult = null;
-            hideResultUI();
-            document.getElementById('loading-state').classList.add('hidden');
-            document.getElementById('welcome-state').classList.remove('hidden');
-        }
-
-        async function lookupTaxCode(mstClean) {
-            setLoadingState(true);
-            hideResultUI();
-
-            try {
-                const responseData = await fetchWithRetry(`https://api.vietqr.io/v2/business/${mstClean.replace(/-/g, '')}`);
-
-                if (responseData && responseData.code === "00" && responseData.data) {
-                    const data = responseData.data;
-                    
-                    currentResult = {
-                        mst: data.id,
-                        name: data.name || 'Hệ thống chưa đồng bộ được tên',
-                        address: data.address || 'Không có địa chỉ đăng ký chính thức',
-                        status: 'Đang hoạt động trên CSDL Quốc gia',
-                        lastUpdated: new Date().toLocaleDateString('vi-VN')
-                    };
-
-                    stats.totalSearches += 1;
-                    stats.successfulSearches += 1;
-                    localStorage.setItem('mst_search_stats_html_light', JSON.stringify(stats));
-                    updateStatsUI();
-
-                    saveToHistory(currentResult);
-                    displayResult(currentResult);
-                    showToast('Tra cứu thông tin thành công!', 'success');
-                } else {
-                    stats.totalSearches += 1;
-                    localStorage.setItem('mst_search_stats_html_light', JSON.stringify(stats));
-                    updateStatsUI();
-                    
-                    showToast('Mã số thuế chưa liên kết ngân hàng hoặc sai số!', 'error');
-                    setLoadingState(false);
-                }
-            } catch (error) {
-                console.error(error);
-                showToast('Hệ thống đang quá tải. Hãy thử lại!', 'error');
-                setLoadingState(false);
-            }
-        }
-
-        async function fetchWithRetry(url, retries = 3, delay = 1000) {
-            try {
-                const response = await fetch(url);
-                if (!response.ok) throw new Error('Cổng kết nối quá tải');
-                return await response.json();
-            } catch (error) {
-                if (retries > 1) {
-                    await new Promise(res => setTimeout(res, delay));
-                    return fetchWithRetry(url, retries - 1, delay * 2);
-                }
-                throw error;
-            }
-        }
-
-        function setLoadingState(isLoading) {
-            const btnText = document.getElementById('btn-text');
-            const btnSpinner = document.getElementById('btn-spinner');
-            const searchBtn = document.getElementById('search-submit-btn');
-            const loadingState = document.getElementById('loading-state');
-            const welcomeState = document.getElementById('welcome-state');
-
-            if (isLoading) {
-                btnText.classList.add('hidden');
-                btnSpinner.classList.remove('hidden');
-                btnSpinner.classList.add('flex');
-                searchBtn.disabled = true;
-                searchBtn.classList.add('opacity-85');
-
-                welcomeState.classList.add('hidden');
-                loadingState.classList.remove('hidden');
-            } else {
-                btnText.classList.remove('hidden');
-                btnSpinner.classList.add('hidden');
-                btnSpinner.classList.remove('flex');
-                searchBtn.disabled = false;
-                searchBtn.classList.remove('opacity-85');
-
-                loadingState.classList.add('hidden');
-            }
-        }
-
-        function hideResultUI() {
-            document.getElementById('result-state').classList.add('hidden');
-        }
-
-        function displayResult(result) {
-            setLoadingState(false);
-            
-            document.getElementById('res-mst').innerText = result.mst;
-            document.getElementById('res-name').innerText = result.name;
-            document.getElementById('res-status').innerText = result.status;
-            document.getElementById('res-updated-at').innerText = result.lastUpdated;
-            document.getElementById('res-address').innerText = result.address;
-
-            // Gắn cơ quan quản lý trực thuộc
-            const taxOfficeName = getTaxOffice(result.address);
-            document.getElementById('res-tax-office').innerText = taxOfficeName;
-
-            // Đồng bộ sang Tab Bản đồ Google Maps
-            document.getElementById('map-address-text').innerText = result.address;
-            document.getElementById('btn-open-google-maps').href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(result.address)}`;
-
-            // Kích hoạt hiển thị khung kết quả
-            document.getElementById('result-state').classList.remove('hidden');
-
-            // Reset tab mặc định là tab Thông tin
-            switchTab('info');
-
-            // Kích hoạt định vị Google Maps trực tiếp bằng iFrame
-            updateRealMap(result.address);
-        }
-
-        // Định vị trực tiếp thông minh qua Google Maps Embed iFrame
-        function updateRealMap(address) {
-            document.getElementById('map-loading').classList.remove('hidden');
-            const gmapsIframe = document.getElementById('gmaps-iframe');
-            
-            // Xử lý chuỗi địa chỉ để đảm bảo Google Maps bóc tách chính xác nhất
-            let cleanAddr = address.replace(/(Tầng\s+[0-9]+|Phòng\s+[0-9]+|Phòng\s+[A-Z0-9]+|Lô\s+[A-Z0-9\-]+)/gi, '').trim();
-            const encodedAddress = encodeURIComponent(cleanAddr);
-            
-            // Sử dụng Google Maps iFrame Embed chính thống dựa trên tham chiếu địa điểm
-            gmapsIframe.src = `https://maps.google.com/maps?q=${encodedAddress}&t=&z=16&ie=UTF8&iwloc=&output=embed`;
-            
-            // Ẩn màn hình loading ngay khi iFrame được chuyển hướng xong
-            gmapsIframe.onload = function() {
-                document.getElementById('map-loading').classList.add('hidden');
-            };
-        }
-
-        // Lưu thông tin vào lịch sử (Đã cấu hình tối đa 3 mục gần nhất)
-        function saveToHistory(item) {
-            const newHistoryItem = {
-                mst: item.mst,
-                name: item.name,
-                address: item.address,
-                timestamp: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })
-            };
-
-            const filtered = history.filter(h => h.mst !== newHistoryItem.mst);
-            history = [newHistoryItem, ...filtered].slice(0, 3); // Cố định chỉ lưu tối đa 3 MST gần nhất
-
-            localStorage.setItem('mst_search_history_html_light', JSON.stringify(history));
-            renderHistoryUI();
-        }
-
-        // Render lịch sử rút gọn dạng thẻ con
-        function renderHistoryUI() {
-            const container = document.getElementById('history-container');
-            const clearHistoryBtn = document.getElementById('clear-history-btn');
-
-            if (history.length === 0) {
-                clearHistoryBtn.classList.add('hidden');
-                container.innerHTML = `
-                    <div class="text-center py-5 border border-dashed border-slate-200 rounded-xl bg-slate-50">
-                        <p class="text-[13px] text-slate-400">Không có lịch sử tra cứu gần đây.</p>
-                    </div>
-                `;
-                return;
-            }
-
-            clearHistoryBtn.classList.remove('hidden');
-            let html = '<div class="flex flex-col gap-2 max-h-56 overflow-y-auto pr-0.5">';
-            
-            history.forEach(item => {
-                html += `
-                    <div class="w-full text-left p-2.5 rounded-lg bg-slate-50 hover:bg-slate-100/80 border border-slate-150 transition-all flex justify-between items-center gap-2 group relative animate-fade-in">
-                        <div class="min-w-0 flex-grow cursor-pointer" onclick="handleHistoryClick('${item.mst}')">
-                            <div class="flex items-center gap-2">
-                                <span class="font-mono-custom text-[13px] font-bold text-indigo-600">
-                                    ${item.mst}
-                                </span>
-                                <span class="text-[11px] text-slate-400 font-mono-custom">${item.timestamp}</span>
-                            </div>
-                            <h4 class="text-[12px] text-slate-600 font-bold truncate mt-0.5 group-hover:text-slate-900 transition-colors">
-                                ${item.name}
-                            </h4>
-                        </div>
-                        <button
-                            onclick="deleteHistoryItem(event, '${item.mst}')"
-                            class="p-1 rounded-md text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-all flex-shrink-0"
-                            title="Xóa dòng lịch sử này"
-                        >
-                            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        </button>
-                    </div>
-                `;
-            });
-
-            html += '</div>';
-            container.innerHTML = html;
-        }
-
-        // Xóa một mục lịch sử
-        window.deleteHistoryItem = function(event, mst) {
-            event.stopPropagation();
-            history = history.filter(item => item.mst !== mst);
-            localStorage.setItem('mst_search_history_html_light', JSON.stringify(history));
-            renderHistoryUI();
-            showToast('Đã xóa mục lịch sử', 'info');
-        }
-
-        // Sự kiện click dòng lịch sử
-        window.handleHistoryClick = function(mst) {
-            const mstInput = document.getElementById('mst-input');
-            mstInput.value = mst;
-            document.getElementById('digit-counter').innerText = `${mst.replace(/-/g, '').length}/15 ký tự`;
-            document.getElementById('clear-input-btn').classList.remove('hidden');
-            evaluateChecksumLive(mst.replace(/-/g, ''));
-            lookupTaxCode(mst);
         };
 
-        function updateStatsUI() {
-            document.getElementById('stat-total').innerText = stats.totalSearches;
-            document.getElementById('stat-success').innerText = stats.successfulSearches;
-        }
+        // DOM elements
+        const searchForm = document.getElementById('searchForm');
+        const mstInput = document.getElementById('mstInput');
+        const clearMstBtn = document.getElementById('clearMstBtn');
+        const btnText = document.getElementById('btnText');
+        const btnSpinner = document.getElementById('btnSpinner');
+        const resultsWrapper = document.getElementById('resultsWrapper');
+        const toast = document.getElementById('toast');
+        const toastIcon = document.getElementById('toastIcon');
+        const toastMessage = document.getElementById('toastMessage');
 
-        // Thiết lập Tabs điều hướng hành chính
-        function setupTabs() {
-            const tabs = ['info', 'map'];
-            
-            tabs.forEach(tab => {
-                document.getElementById(`tab-btn-${tab}`).addEventListener('click', () => {
-                    switchTab(tab);
-                });
-            });
-        }
+        // Manage Input clear button state
+        mstInput.addEventListener('input', () => {
+            if (mstInput.value.trim().length > 0) {
+                clearMstBtn.classList.remove('hidden');
+            } else {
+                clearMstBtn.classList.add('hidden');
+            }
+        });
 
-        function switchTab(activeTab) {
-            const tabs = ['info', 'map'];
-            
-            tabs.forEach(tab => {
-                const btn = document.getElementById(`tab-btn-${tab}`);
-                const content = document.getElementById(`tab-content-${tab}`);
-                const indicator = btn.querySelector('.tab-indicator');
+        clearMstBtn.addEventListener('click', () => {
+            mstInput.value = '';
+            clearMstBtn.classList.add('hidden');
+            mstInput.focus();
+        });
 
-                if (tab === activeTab) {
-                    btn.classList.remove('text-slate-400', 'hover:text-slate-600');
-                    btn.classList.add('text-indigo-600');
-                    content.classList.remove('hidden');
-                    content.classList.add('animate-fade-in');
-                    indicator.classList.remove('hidden');
-                } else {
-                    btn.classList.add('text-slate-400', 'hover:text-slate-600');
-                    btn.classList.remove('text-indigo-600');
-                    content.classList.add('hidden');
-                    content.classList.remove('animate-fade-in');
-                    indicator.classList.add('hidden');
+        // Universal handler to communicate with Gemini 2.5 Flash API with timeout abort support
+        async function callGeminiAPI(prompt, systemInstruction, timeoutMs = 8000) {
+            const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            const payload = {
+                contents: [{ parts: [{ text: prompt }] }],
+                systemInstruction: { parts: [{ text: systemInstruction }] },
+                tools: [{ google_search: {} }],
+                generationConfig: {
+                    responseMimeType: "application/json"
                 }
-            });
-        }
+            };
 
-        function setupCopyActions() {
-            document.getElementById('copy-address-btn').addEventListener('click', () => {
-                if (currentResult) {
-                    copyToClipboard(currentResult.address, 'Địa chỉ trụ sở');
-                }
-            });
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
-            document.getElementById('btn-copy-name').addEventListener('click', () => {
-                if (currentResult) {
-                    copyToClipboard(currentResult.name, 'Tên doanh nghiệp');
-                }
-            });
-
-            document.getElementById('btn-copy-mst').addEventListener('click', () => {
-                if (currentResult) {
-                    copyToClipboard(currentResult.mst, 'Mã số thuế');
-                }
-            });
-
-            document.getElementById('btn-copy-address').addEventListener('click', () => {
-                if (currentResult) {
-                    copyToClipboard(currentResult.address, 'Địa chỉ đăng ký');
-                }
-            });
-        }
-
-        function copyToClipboard(text, label) {
-            const textField = document.createElement('textarea');
-            textField.value = text;
-            document.body.appendChild(textField);
-            textField.select();
-            
             try {
-                document.execCommand('copy');
-                showToast(`Đã sao chép ${label}!`, 'success');
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                    signal: controller.signal
+                });
+                clearTimeout(timeoutId);
+
+                if (!response.ok) throw new Error("API response error");
+                const json = await response.json();
+                const text = json.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (text) {
+                    return JSON.parse(text);
+                }
             } catch (err) {
-                showToast('Không thể sao chép tự động.', 'error');
+                clearTimeout(timeoutId);
+                throw err;
             }
-            textField.remove();
+            return null;
         }
 
-        function showToast(message, type = 'success') {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            
-            let bgClass = 'bg-white border-indigo-150 text-indigo-800 shadow-indigo-50';
-            let iconColor = 'text-indigo-500';
-            
-            if (type === 'success') {
-                bgClass = 'bg-white border-emerald-150 text-emerald-800 shadow-emerald-50';
-                iconColor = 'text-emerald-500';
-            } else if (type === 'error') {
-                bgClass = 'bg-white border-rose-150 text-rose-800 shadow-rose-50';
-                iconColor = 'text-rose-500';
-            } else if (type === 'info') {
-                bgClass = 'bg-white border-slate-150 text-slate-700 shadow-slate-50';
-                iconColor = 'text-slate-400';
+        // Fetch primary data (Tên, Địa chỉ) exclusively from masothue.com
+        async function fetchPrimaryData(mst) {
+            if (localCache[mst]) {
+                return {
+                    tenDoanhNghiep: localCache[mst].tenDoanhNghiep,
+                    diaChiThue: localCache[mst].diaChiThue
+                };
             }
 
-            toast.className = `flex items-center gap-2 px-4 py-3 rounded-lg shadow-md border transition-all duration-300 transform translate-y-2 opacity-0 pointer-events-auto ${bgClass}`;
-            toast.innerHTML = `
-                <span class="flex-shrink-0 w-2 h-2 rounded-full animate-ping ${iconColor} bg-current"></span>
-                <span class="font-extrabold text-[13px] leading-none">${message}</span>
-            `;
+            try {
+                const sysInst = "Bạn là trợ lý tra cứu mã số thuế doanh nghiệp chuyên nghiệp. Nhiệm vụ của bạn là lấy chính xác Tên và Địa chỉ đăng ký thuế ứng với mã số thuế tại trang https://masothue.com/.";
+                const prompt = `Thực hiện tìm kiếm Google Search cho từ khóa: 'site:masothue.com "${mst}"'. Trích xuất dữ liệu trả về JSON: {"tenDoanhNghiep": "TÊN DOANH NGHIỆP VIẾT HOA", "diaChiThue": "Địa chỉ đăng ký thuế chính xác"}`;
+                
+                const data = await callGeminiAPI(prompt, sysInst, 8000); 
+                if (data && data.tenDoanhNghiep) {
+                    return data;
+                }
+            } catch (err) {
+                console.error("Failed to fetch from masothue.com:", err);
+            }
+            return null;
+        }
 
-            container.appendChild(toast);
+        // Fetch secondary data (Tình trạng, Cơ quan quản lý) exclusively from thongtincongty.vn
+        async function fetchSecondaryData(mst) {
+            if (localCache[mst]) {
+                return {
+                    tinhTrang: localCache[mst].tinhTrang,
+                    quanLyBoi: localCache[mst].quanLyBoi
+                };
+            }
 
-            setTimeout(() => {
-                toast.classList.remove('opacity-0', 'translate-y-2');
-            }, 10);
+            try {
+                const sysInst = "Bạn là trợ lý tra cứu thông tin thuế doanh nghiệp. Nhiệm vụ của bạn là tìm thông tin Tình trạng hoạt động và Cơ quan quản lý thuế ứng với mã số thuế tại trang https://thongtincongty.vn/.";
+                const prompt = `Thực hiện tìm kiếm Google Search cho từ khóa: 'site:thongtincongty.vn "${mst}"'. Trích xuất dữ liệu trả về JSON: {"tinhTrang": "Tình trạng hoạt động hiện tại", "quanLyBoi": "Cơ quan thuế quản lý trực tiếp"}`;
+                
+                const data = await callGeminiAPI(prompt, sysInst, 8000); 
+                if (data && (data.tinhTrang || data.quanLyBoi)) {
+                    return data;
+                }
+            } catch (err) {
+                console.error("Failed to fetch from thongtincongty.vn:", err);
+            }
+            return null;
+        }
 
-            setTimeout(() => {
-                toast.classList.add('opacity-0', 'translate-y-[-5px]');
-                setTimeout(() => {
-                    toast.remove();
-                }, 300);
-            }, 3000);
+        // Form Submit Handler
+        searchForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const mstVal = mstInput.value.trim().replace(/\s/g, '');
+            if (!mstVal) {
+                showToast("Vui lòng nhập mã số thuế hợp lệ.", "error");
+                return;
+            }
+
+            setLoading(true);
+            closeToast();
+
+            // Set temporary loading states to existing fields
+            initializePlaceholderStates(mstVal);
+
+            // Progressive Hydration
+            const primaryPromise = fetchPrimaryData(mstVal);
+            const secondaryPromise = fetchSecondaryData(mstVal);
+
+            // Render primary data as soon as it resolves
+            primaryPromise.then(primaryResult => {
+                if (primaryResult) {
+                    renderPrimaryData(primaryResult);
+                } else {
+                    handlePrimaryError();
+                }
+            }).catch(err => {
+                console.error("Primary fetch failed:", err);
+                handlePrimaryError();
+            });
+
+            // Render secondary data as soon as it resolves
+            secondaryPromise.then(secondaryResult => {
+                if (secondaryResult) {
+                    renderSecondaryData(secondaryResult);
+                } else {
+                    handleSecondaryError();
+                }
+            }).catch(err => {
+                console.error("Secondary fetch failed:", err);
+                handleSecondaryError();
+            });
+
+            // Wait for both to finalize loading indicator
+            try {
+                const [pRes, sRes] = await Promise.all([primaryPromise, secondaryPromise]);
+                if (pRes || sRes) {
+                    showToast("Tra cứu thành công", "success");
+                } else {
+                    showToast("Không tìm thấy dữ liệu trên các cổng thông tin.", "error");
+                }
+            } catch (err) {
+                console.warn("Parallel fetch execution error occurred:", err);
+            } finally {
+                setLoading(false);
+            }
+        });
+
+        // Setup placeholder animation states
+        function initializePlaceholderStates(mst) {
+            const fields = ['colTenDN', 'colDiaChiThue', 'colTinhTrang', 'colQuanLyBoi'];
+            fields.forEach(f => {
+                const el = document.getElementById(f);
+                el.textContent = "Đang đồng bộ...";
+                el.className = "animate-pulse text-slate-400 font-medium";
+            });
+            document.getElementById('colMST').textContent = mst;
+        }
+
+        // Render Primary Web Data
+        function renderPrimaryData(data) {
+            const elTen = document.getElementById('colTenDN');
+            elTen.textContent = data.tenDoanhNghiep || "Không tìm thấy";
+            elTen.className = "text-base sm:text-lg font-bold text-slate-900 leading-snug";
+
+            const elDiaChi = document.getElementById('colDiaChiThue');
+            elDiaChi.textContent = data.diaChiThue || "Không tìm thấy";
+            elDiaChi.className = "text-sm sm:text-base text-slate-700 leading-relaxed";
+        }
+
+        // Render Secondary Web Data
+        function renderSecondaryData(data) {
+            const elTinhTrang = document.getElementById('colTinhTrang');
+            elTinhTrang.textContent = data.tinhTrang || "Không tìm thấy hoặc chưa cập nhật";
+            elTinhTrang.className = "text-base font-semibold leading-tight text-slate-800";
+
+            const elQuanLy = document.getElementById('colQuanLyBoi');
+            elQuanLy.textContent = data.quanLyBoi || "Không tìm thấy hoặc chưa cập nhật";
+            elQuanLy.className = "text-sm sm:text-base text-slate-700 leading-relaxed";
+        }
+
+        // Handle errors elegantly
+        function handlePrimaryError() {
+            const elTen = document.getElementById('colTenDN');
+            elTen.textContent = "Không tìm thấy thông tin cơ bản";
+            elTen.className = "text-base font-semibold text-rose-500";
+
+            const elDiaChi = document.getElementById('colDiaChiThue');
+            elDiaChi.textContent = "Không thể kết nối đến máy chủ masothue.com";
+            elDiaChi.className = "text-sm text-slate-400";
+        }
+
+        function handleSecondaryError() {
+            const elTinhTrang = document.getElementById('colTinhTrang');
+            elTinhTrang.textContent = "Không thể lấy thông tin trạng thái";
+            elTinhTrang.className = "text-sm text-slate-400";
+
+            const elQuanLy = document.getElementById('colQuanLyBoi');
+            elQuanLy.textContent = "Không thể kết nối thongtincongty.vn";
+            elQuanLy.className = "text-sm text-slate-400";
+        }
+
+        // Clear loading animations if error occurs
+        function resetFieldStates() {
+            const fields = ['colTenDN', 'colDiaChiThue', 'colTinhTrang', 'colQuanLyBoi'];
+            fields.forEach(f => {
+                const el = document.getElementById(f);
+                el.className = "";
+                el.textContent = "-";
+            });
+        }
+
+        // Control Spinner / Search Button State
+        function setLoading(isLoading) {
+            if (isLoading) {
+                btnText.textContent = "Đang tra cứu...";
+                btnSpinner.classList.remove('hidden');
+                mstInput.disabled = true;
+            } else {
+                btnText.textContent = "Tra cứu ngay";
+                btnSpinner.classList.add('hidden');
+                mstInput.disabled = false;
+            }
+        }
+
+        // Custom Toast Notifications (Slide up, centered, disappears after 1.5s)
+        function showToast(message, type) {
+            toast.classList.remove('hidden');
+            toastMessage.textContent = message;
+
+            // Reset class list to default for clean animation & styles
+            toast.className = "fixed bottom-5 left-1/2 z-50 max-w-md w-[calc(100%-2rem)] sm:w-96 p-3 rounded-xl border flex flex-col items-center justify-center text-center shadow-xl transition-all duration-300 animate-slide-up bg-white";
+
+            if (type === 'success') {
+                toast.className += " border-emerald-200 bg-emerald-50 text-emerald-800";
+                toastIcon.innerHTML = `
+                    <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                `;
+            } else {
+                toast.className += " border-rose-200 bg-rose-50 text-rose-800";
+                toastIcon.innerHTML = `
+                    <svg class="w-5 h-5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                    </svg>
+                `;
+            }
+
+            // Tự động đóng sau 1.5 giây (1500ms)
+            clearTimeout(window.toastTimeout);
+            window.toastTimeout = setTimeout(() => {
+                closeToast();
+            }, 1500);
+        }
+
+        function closeToast() {
+            toast.classList.add('hidden');
+        }
+
+        // Copy dynamic text to clipboard
+        function copyText(elementId) {
+            const valText = document.getElementById(elementId).textContent;
+            executeCopy(valText, `Đã sao chép: ${valText}`);
+        }
+
+        // Execute Copy with legacy document.execCommand support for Sandbox Iframes
+        function executeCopy(text, successMsg) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showToast(successMsg, "success");
+                } else {
+                    showToast("Sao chép thất bại.", "error");
+                }
+            } catch (err) {
+                showToast("Không thể sao chép dữ liệu.", "error");
+            }
+            document.body.removeChild(textArea);
         }
     </script>
 </body>
